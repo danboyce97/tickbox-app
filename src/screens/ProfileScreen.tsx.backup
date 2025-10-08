@@ -1,0 +1,575 @@
+import React from "react";
+import { View, Text, Pressable, ScrollView, Alert, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import * as ImagePicker from "expo-image-picker";
+import { useUserStore } from "../state/userStore";
+import { useMemoryStore } from "../state/memoryStore";
+import { useFriendStore } from "../state/friendStore";
+import { useTheme } from "../contexts/ThemeContext";
+import TickBoxCard from "../components/TickBoxCard";
+import { RootStackParamList } from "../navigation/AppNavigator";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+export default function ProfileScreen() {
+  const navigation = useNavigation<NavigationProp>();
+  const { colors } = useTheme();
+  const user = useUserStore((state) => state.user);
+  const updateUser = useUserStore((state) => state.updateUser);
+  const setTheme = useUserStore((state) => state.setTheme);
+  const updateNotificationSettings = useUserStore((state) => state.updateNotificationSettings);
+  const logout = useUserStore((state) => state.logout);
+  
+  const filterMemories = useMemoryStore((state) => state.filterMemories);
+  const friends = useFriendStore((state) => state.friends);
+
+
+
+  if (!user) return null;
+
+  const userMemories = filterMemories({ userId: user.id, sortBy: "date" });
+  const totalSpent = userMemories.reduce((sum, memory) => sum + (memory.price || 0), 0);
+  
+  // Calculate top category
+  const categoryCount = userMemories.reduce((acc, memory) => {
+    acc[memory.category] = (acc[memory.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const topCategory = Object.entries(categoryCount).sort(([,a], [,b]) => b - a)[0]?.[0] || "None";
+
+  // Calculate friends with most shared events
+  const sharedEventCounts = friends.reduce((acc, friend) => {
+    const sharedEvents = userMemories.filter(memory => 
+      memory.taggedFriends.includes(friend.id)
+    ).length;
+    acc[friend.id] = sharedEvents;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const topFriends = friends
+    .filter(friend => sharedEventCounts[friend.id] > 0)
+    .sort((a, b) => sharedEventCounts[b.id] - sharedEventCounts[a.id])
+    .slice(0, 5); // Top 5 friends
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Logout", style: "destructive", onPress: logout },
+      ]
+    );
+  };
+
+
+
+  const handleImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission required", "Permission to access photo library is required!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      updateUser({ profilePhoto: result.assets[0].uri });
+    }
+  };
+
+  if (showSettings) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+        <ScrollView className="flex-1">
+          {/* Header */}
+          <View className="flex-row items-center px-6 py-4" style={{ backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border }}>
+            <Pressable
+              onPress={() => setShowSettings(false)}
+              className="mr-4"
+            >
+              <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
+            </Pressable>
+            <Text style={{ color: colors.text }} className="text-xl font-bold">Settings</Text>
+          </View>
+
+          <View className="px-6 py-6">
+            {/* Theme Settings */}
+            <TickBoxCard style={{ marginBottom: 16 }}>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">Appearance</Text>
+              <View className="flex-row justify-between items-center">
+                <Text style={{ color: colors.textSecondary }}>Dark Mode</Text>
+                <Switch
+                  value={user.theme === "dark"}
+                  onValueChange={(value) => setTheme(value ? "dark" : "light")}
+                  trackColor={{ false: colors.border, true: colors.primary }}
+                  thumbColor="white"
+                />
+              </View>
+            </TickBoxCard>
+
+            {/* Notification Settings */}
+            <TickBoxCard style={{ marginBottom: 16 }}>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">Notifications</Text>
+              
+              <View className="space-y-3">
+                <View className="flex-row justify-between items-center py-2">
+                  <View>
+                    <Text style={{ color: colors.textSecondary }}>Push Notifications</Text>
+                    <Text style={{ color: colors.textMuted, fontSize: 12 }}>Master toggle for all notifications</Text>
+                  </View>
+                  <Switch
+                    value={user.notificationSettings.pushEnabled}
+                    onValueChange={() => handleNotificationToggle("pushEnabled")}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>On This Day</Text>
+                  <Switch
+                    value={user.notificationSettings.onThisDay}
+                    onValueChange={() => handleNotificationToggle("onThisDay")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>One Week To Go</Text>
+                  <Switch
+                    value={user.notificationSettings.oneWeekToGo}
+                    onValueChange={() => handleNotificationToggle("oneWeekToGo")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>Friend Requests</Text>
+                  <Switch
+                    value={user.notificationSettings.friendRequests}
+                    onValueChange={() => handleNotificationToggle("friendRequests")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>New Memories from Friends</Text>
+                  <Switch
+                    value={user.notificationSettings.newMemories}
+                    onValueChange={() => handleNotificationToggle("newMemories")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>Memory Likes</Text>
+                  <Switch
+                    value={user.notificationSettings.memoriesLiked}
+                    onValueChange={() => handleNotificationToggle("memoriesLiked")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+
+                <View className="flex-row justify-between items-center py-2">
+                  <Text style={{ color: colors.textSecondary }}>Tagged in Memory</Text>
+                  <Switch
+                    value={user.notificationSettings.tagged}
+                    onValueChange={() => handleNotificationToggle("tagged")}
+                    disabled={!user.notificationSettings.pushEnabled}
+                    trackColor={{ false: colors.border, true: colors.primary }}
+                    thumbColor="white"
+                  />
+                </View>
+              </View>
+            </TickBoxCard>
+
+            {/* Account Actions */}
+            <TickBoxCard>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">Account</Text>
+              <Pressable
+                onPress={handleLogout}
+                className="py-3"
+              >
+                <Text style={{ color: colors.error }} className="font-medium">Logout</Text>
+              </Pressable>
+            </TickBoxCard>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {/* Profile Header */}
+        <View className="items-center py-8 px-6">
+          {/* Profile Photo */}
+          <Pressable onPress={handleImagePicker} className="mb-4">
+            <View style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: colors.border, overflow: "hidden" }}>
+              {user.profilePhoto ? (
+                <Image 
+                  source={{ uri: user.profilePhoto }} 
+                  style={{ width: "100%", height: "100%" }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="flex-1 items-center justify-center">
+                  <Ionicons name="person" size={48} color={colors.textMuted} />
+                </View>
+              )}
+            </View>
+          </Pressable>
+
+          {/* Name and Username */}
+          <Text style={{ color: colors.text, fontSize: 28, fontWeight: "bold", marginBottom: 4 }}>
+            {user.displayName}
+          </Text>
+          <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 12 }}>
+            @{user.username}
+          </Text>
+
+          {/* Bio */}
+          {user.bio && (
+            <Text style={{ color: colors.textSecondary, fontSize: 16, textAlign: "center", marginBottom: 16 }}>
+              {user.bio}
+            </Text>
+          )}
+
+          {/* Location */}
+          {user.location && (
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="location-outline" size={18} color={colors.textSecondary} />
+              <Text style={{ color: colors.textSecondary, marginLeft: 6 }}>
+                {user.location}
+              </Text>
+            </View>
+          )}
+
+          {/* Join Date */}
+          <View className="flex-row items-center mb-6">
+            <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
+            <Text style={{ color: colors.textSecondary, marginLeft: 6 }}>
+              Joined {new Date(user.joinDate).toLocaleDateString("en-US", { 
+                month: "long", 
+                year: "numeric" 
+              })}
+            </Text>
+          </View>
+
+          {/* Edit Profile Button */}
+          <Pressable
+            onPress={() => navigation.navigate("EditProfile")}
+            style={{
+              backgroundColor: colors.surface,
+              paddingHorizontal: 24,
+              paddingVertical: 12,
+              borderRadius: 25,
+              borderWidth: 1,
+              borderColor: colors.border,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="create-outline" size={16} color={colors.textSecondary} />
+            <Text style={{ color: colors.text, marginLeft: 8, fontWeight: "500" }}>
+              Edit Profile
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* My Stats Section */}
+        <View className="px-6 mb-6">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text style={{ color: colors.text, fontSize: 22, fontWeight: "bold" }}>
+              My Stats
+            </Text>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: colors.surface,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: colors.border,
+              }}
+            >
+              <Ionicons name="filter" size={16} color={colors.textSecondary} />
+              <Text style={{ color: colors.textSecondary, marginLeft: 6, fontSize: 14 }}>
+                All Time
+              </Text>
+              <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
+            </Pressable>
+          </View>
+
+          {/* Primary Stats Row */}
+          <TickBoxCard style={{ marginBottom: 16 }}>
+            <View className="flex-row justify-between">
+              {/* Total Tickets */}
+              <View className="items-center flex-1">
+                <View
+                  style={{
+                    backgroundColor: `${colors.primary}20`,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 12,
+                  }}
+                >
+                  <Ionicons name="ticket" size={28} color={colors.primary} />
+                </View>
+                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>
+                  {userMemories.length}
+                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
+                  Total Tickets
+                </Text>
+              </View>
+
+              {/* Total Spent */}
+              <View className="items-center flex-1">
+                <View
+                  style={{
+                    backgroundColor: `${colors.success}20`,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 12,
+                  }}
+                >
+                  <Ionicons name="wallet" size={28} color={colors.success} />
+                </View>
+                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>
+                  £{totalSpent.toFixed(0)}
+                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
+                  Total Spent
+                </Text>
+              </View>
+
+              {/* Top Category */}
+              <View className="items-center flex-1">
+                <View
+                  style={{
+                    backgroundColor: `${colors.warning}20`,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 12,
+                  }}
+                >
+                  <Ionicons name="pricetag" size={28} color={colors.warning} />
+                </View>
+                <Text style={{ color: colors.text, fontSize: 16, fontWeight: "bold" }} numberOfLines={1}>
+                  {topCategory}
+                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
+                  Top Category
+                </Text>
+              </View>
+            </View>
+          </TickBoxCard>
+
+
+        </View>
+
+        {/* Top Friends Section */}
+        <View className="px-6 pb-8">
+          <TickBoxCard>
+            <View className="flex-row items-center justify-between mb-4">
+              <View className="flex-row items-center">
+                <View style={{ backgroundColor: colors.warning, width: 24, height: 24, borderRadius: 4, justifyContent: "center", alignItems: "center", marginRight: 8 }}>
+                  <Ionicons name="trophy" size={14} color="white" />
+                </View>
+                <Text style={{ color: colors.text, fontSize: 18, fontWeight: "bold" }}>
+                  Friends Leaderboard
+                </Text>
+              </View>
+              {topFriends.length > 3 && (
+                <Pressable>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>View All</Text>
+                </Pressable>
+              )}
+            </View>
+
+            {topFriends.length === 0 ? (
+              <View className="items-center py-8">
+                <Ionicons name="people-outline" size={32} color={colors.textMuted} />
+                <Text style={{ color: colors.textSecondary, marginTop: 8, textAlign: "center" }}>
+                  Tag friends in memories to see them on your leaderboard
+                </Text>
+              </View>
+            ) : (
+              <View>
+                {topFriends.slice(0, 5).map((friend, index) => {
+                  const sharedEventCount = sharedEventCounts[friend.id];
+                  const rankColors = [colors.warning, colors.textSecondary, colors.textMuted];
+                  const rankColor = rankColors[index] || colors.textMuted;
+                  
+                  return (
+                    <View key={friend.id} className="flex-row items-center py-3">
+                      <View 
+                        style={{ 
+                          backgroundColor: index < 3 ? rankColor : colors.border,
+                          width: 24,
+                          height: 24,
+                          borderRadius: 12,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: 12
+                        }}
+                      >
+                        <Text 
+                          style={{ 
+                            color: index < 3 ? "white" : colors.textMuted,
+                            fontSize: 12,
+                            fontWeight: "bold"
+                          }}
+                        >
+                          {index + 1}
+                        </Text>
+                      </View>
+                      
+                      <View style={{ backgroundColor: colors.border }} className="w-10 h-10 rounded-full mr-3" />
+                      
+                      <View className="flex-1">
+                        <Text style={{ color: colors.text, fontWeight: "500" }}>
+                          {friend.displayName}
+                        </Text>
+                        <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                          @{friend.username}
+                        </Text>
+                      </View>
+                      
+                      <View className="items-end">
+                        <Text style={{ color: colors.primary, fontWeight: "600" }}>
+                          {sharedEventCount}
+                        </Text>
+                        <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                          {sharedEventCount === 1 ? "event" : "events"}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
+          </TickBoxCard>
+        </View>
+
+        {/* Account Section */}
+        <View className="px-6 pb-8">
+          <Text style={{ color: colors.text }} className="text-xl font-bold mb-4">
+            Account
+          </Text>
+          
+          <View className="space-y-3">
+            <TickBoxCard noPadding>
+              <Pressable
+                onPress={() => navigation.navigate("InviteFriends")}
+                style={{ padding: 16, flexDirection: "row", alignItems: "center" }}
+              >
+                <Ionicons name="person-add" size={20} color={colors.textSecondary} style={{ marginRight: 16 }} />
+                <Text style={{ color: colors.text, flex: 1 }}>Invite Friends</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+              </Pressable>
+            </TickBoxCard>
+            
+            <TickBoxCard noPadding>
+              <Pressable
+                onPress={() => navigation.navigate("SettingsPrivacy")}
+                style={{ padding: 16, flexDirection: "row", alignItems: "center" }}
+              >
+                <Ionicons name="settings" size={20} color={colors.textSecondary} style={{ marginRight: 16 }} />
+                <Text style={{ color: colors.text, flex: 1 }}>Settings & Privacy</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+              </Pressable>
+            </TickBoxCard>
+            
+            <TickBoxCard noPadding>
+              <Pressable
+                onPress={() => navigation.navigate("SupportFeedback")}
+                style={{ padding: 16, flexDirection: "row", alignItems: "center" }}
+              >
+                <Ionicons name="help-circle" size={20} color={colors.textSecondary} style={{ marginRight: 16 }} />
+                <Text style={{ color: colors.text, flex: 1 }}>Support & Feedback</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+              </Pressable>
+            </TickBoxCard>
+            
+            <TickBoxCard noPadding>
+              <Pressable
+                onPress={() => {
+                  Alert.alert(
+                    "Sign Out",
+                    "Are you sure you want to sign out?",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      { text: "Sign Out", style: "destructive", onPress: logout },
+                    ]
+                  );
+                }}
+                style={{ padding: 16, flexDirection: "row", alignItems: "center" }}
+              >
+                <Ionicons name="log-out" size={20} color={colors.error} style={{ marginRight: 16 }} />
+                <Text style={{ color: colors.error, flex: 1 }}>Sign Out</Text>
+              </Pressable>
+            </TickBoxCard>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Settings Button - Top Right */}
+      <Pressable
+        onPress={() => setShowSettings(true)}
+        style={{
+          position: "absolute",
+          top: 60,
+          right: 24,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: colors.surface,
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+        }}
+      >
+        <Ionicons name="settings-outline" size={20} color={colors.textSecondary} />
+      </Pressable>
+    </SafeAreaView>
+  );
+}

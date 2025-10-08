@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "TickBox",
+    "slug": "tickbox",
+    "scheme": "tickbox",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "We use tracking to provide you with personalized offers and improve your experience."
+      }
+    },
+    "android": {
+      "edgeToEdgeEnabled": true,
+      "package": "com.tickbox.app",
+      "permissions": [
+        "com.android.vending.BILLING"
+      ]
+    },
+    "plugins": [
+      "expo-apple-authentication"
+    ]
+  }
+}
