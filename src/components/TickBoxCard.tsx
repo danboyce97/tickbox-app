@@ -9,14 +9,9 @@ interface TickBoxCardProps {
   noPadding?: boolean;
 }
 
-export default function TickBoxCard({ 
-  children, 
-  className = "", 
-  style,
-  noPadding = false 
-}: TickBoxCardProps) {
+export default function TickBoxCard({ children, className = "", style, noPadding = false }: TickBoxCardProps) {
   const { colors, isDark } = useTheme();
-  
+
   const cardStyle: ViewStyle = {
     backgroundColor: colors.cardBackground,
     borderRadius: 12,

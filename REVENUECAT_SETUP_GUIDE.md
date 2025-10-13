@@ -1,11 +1,13 @@
 # RevenueCat Setup Guide for TickBox
 
 ## Current Issue
+
 The error message indicates that the package with ID `$rc_monthly` is not found in your RevenueCat dashboard. This means RevenueCat needs to be properly configured.
 
 ## What You Need to Do
 
 ### Step 1: Create Product in App Store Connect
+
 1. Go to [App Store Connect](https://appstoreconnect.apple.com)
 2. Navigate to your app → **In-App Purchases**
 3. Click **+** to create a new In-App Purchase
@@ -18,6 +20,7 @@ The error message indicates that the package with ID `$rc_monthly` is not found 
 6. Save and submit for review
 
 ### Step 2: Configure RevenueCat Dashboard
+
 1. Go to [RevenueCat Dashboard](https://app.revenuecat.com)
 2. Navigate to your project
 3. Go to **Products** → **iOS**
@@ -26,6 +29,7 @@ The error message indicates that the package with ID `$rc_monthly` is not found 
 6. Click **Save**
 
 ### Step 3: Create Entitlement
+
 1. In RevenueCat Dashboard, go to **Entitlements**
 2. Click **+ New Entitlement**
 3. Set:
@@ -35,6 +39,7 @@ The error message indicates that the package with ID `$rc_monthly` is not found 
 5. Click **Save**
 
 ### Step 4: Create Offering with Package
+
 1. In RevenueCat Dashboard, go to **Offerings**
 2. Click **+ New Offering** or edit the **default** offering
 3. Set **Offering ID**: `default`
@@ -46,6 +51,7 @@ The error message indicates that the package with ID `$rc_monthly` is not found 
 6. Click **Save**
 
 ### Step 5: Verify Configuration
+
 After setup, your RevenueCat configuration should look like this:
 
 ```
@@ -93,15 +99,18 @@ The app is already configured with these values (in `/src/services/revenueCat.ts
 ## Troubleshooting
 
 ### Issue: "No current offering found"
+
 - Make sure the offering is marked as **Current** in RevenueCat dashboard
 - Verify the offering ID is `default`
 
 ### Issue: "Package not found"
+
 - Double-check the package ID is exactly `$rc_monthly` (including the `$`)
 - Verify the package is attached to the default offering
 - Make sure the product `1022A` exists and is attached to the package
 
 ### Issue: "Entitlement not active after purchase"
+
 - Verify the entitlement ID is exactly `TickBox Premium Monthly`
 - Check that the product `1022A` is properly linked to the entitlement
 - Make sure you're testing with a sandbox test user
@@ -109,6 +118,7 @@ The app is already configured with these values (in `/src/services/revenueCat.ts
 ## Testing Before Full Setup
 
 The app will continue to work without RevenueCat being fully configured:
+
 - The subscription screen will show a placeholder price (£1.99)
 - Purchases will be disabled with a friendly message
 - All other app features will work normally
@@ -117,6 +127,7 @@ The app will continue to work without RevenueCat being fully configured:
 ## API Key
 
 Make sure your `.env` file contains:
+
 ```
 EXPO_PUBLIC_REVENUECAT_API_KEY=your_actual_api_key_here
 ```
@@ -126,6 +137,7 @@ Get your API key from RevenueCat Dashboard → Settings → API Keys → Public 
 ## Need Help?
 
 If you continue having issues:
+
 1. Check the console logs - they provide detailed information about what's missing
 2. Verify all IDs match exactly (case-sensitive)
 3. Contact RevenueCat support with your app configuration

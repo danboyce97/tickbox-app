@@ -19,21 +19,28 @@ interface OnboardingSlide {
 const slides: OnboardingSlide[] = [
   {
     title: "Welcome to TickBox",
-    description: "Your digital memory keeper for all life's special moments. Transform tickets into treasured memories.",
+    description:
+      "Your digital memory keeper for all life's special moments. Transform tickets into treasured memories.",
     icon: "ticket-outline",
     color: "#dc808b",
-    features: ["Keep all your event memories in one place", "Never lose a ticket again", "Relive your favorite moments"],
+    features: [
+      "Keep all your event memories in one place",
+      "Never lose a ticket again",
+      "Relive your favorite moments",
+    ],
   },
   {
     title: "Upload Tickets",
-    description: "Simply snap a photo of your ticket and let TickBox do the rest. We'll extract all the details automatically.",
+    description:
+      "Simply snap a photo of your ticket and let TickBox do the rest. We'll extract all the details automatically.",
     icon: "camera-outline",
     color: "#dc808b",
     features: ["Auto-extract event details", "High-quality photo storage", "QR code protection for future events"],
   },
   {
     title: "Tag Your Friends",
-    description: "Tag friends who joined you at events and share your experiences together. Build memories as a community.",
+    description:
+      "Tag friends who joined you at events and share your experiences together. Build memories as a community.",
     icon: "people-outline",
     color: "#dc808b",
     features: ["Tag friends in memories", "See friends' activities", "Share experiences together"],
@@ -92,10 +99,7 @@ export default function OnboardingScreen() {
         {/* Header */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 }}>
           {currentPage > 0 && (
-            <Pressable
-              onPress={handlePrevious}
-              style={{ padding: 8 }}
-            >
+            <Pressable onPress={handlePrevious} style={{ padding: 8 }}>
               <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
             </Pressable>
           )}
@@ -116,46 +120,60 @@ export default function OnboardingScreen() {
           style={{ flex: 1 }}
         >
           {slides.map((slide, index) => (
-            <View 
-              key={`slide-${index}`} 
-              style={{ 
+            <View
+              key={`slide-${index}`}
+              style={{
                 width: SCREEN_WIDTH,
                 flex: 1,
-                alignItems: "center", 
-                justifyContent: "center", 
-                paddingHorizontal: 32 
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 32,
               }}
             >
-              <View 
-                style={{ 
-                  width: 128, 
-                  height: 128, 
-                  borderRadius: 64, 
-                  alignItems: "center", 
-                  justifyContent: "center", 
+              <View
+                style={{
+                  width: 128,
+                  height: 128,
+                  borderRadius: 64,
+                  alignItems: "center",
+                  justifyContent: "center",
                   marginBottom: 32,
-                  backgroundColor: `${slide.color}20` 
+                  backgroundColor: `${slide.color}20`,
                 }}
               >
                 <Ionicons name={slide.icon} size={64} color={slide.color} />
               </View>
-              
-              <Text style={{ color: colors.text, fontSize: 28, fontWeight: "bold", marginBottom: 16, textAlign: "center" }}>
+
+              <Text
+                style={{ color: colors.text, fontSize: 28, fontWeight: "bold", marginBottom: 16, textAlign: "center" }}
+              >
                 {slide.title}
               </Text>
-              
-              <Text style={{ color: colors.textSecondary, fontSize: 17, textAlign: "center", lineHeight: 24, paddingHorizontal: 16, marginBottom: 32 }}>
+
+              <Text
+                style={{
+                  color: colors.textSecondary,
+                  fontSize: 17,
+                  textAlign: "center",
+                  lineHeight: 24,
+                  paddingHorizontal: 16,
+                  marginBottom: 32,
+                }}
+              >
                 {slide.description}
               </Text>
 
               {/* Feature List */}
               <View style={{ width: "100%", maxWidth: 320 }}>
                 {slide.features.map((feature, featureIndex) => (
-                  <View key={`feature-${index}-${featureIndex}`} style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
-                    <View style={{ width: 8, height: 8, borderRadius: 4, marginRight: 16, backgroundColor: slide.color }} />
-                    <Text style={{ color: colors.text, flex: 1, fontSize: 15 }}>
-                      {feature}
-                    </Text>
+                  <View
+                    key={`feature-${index}-${featureIndex}`}
+                    style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}
+                  >
+                    <View
+                      style={{ width: 8, height: 8, borderRadius: 4, marginRight: 16, backgroundColor: slide.color }}
+                    />
+                    <Text style={{ color: colors.text, flex: 1, fontSize: 15 }}>{feature}</Text>
                   </View>
                 ))}
               </View>

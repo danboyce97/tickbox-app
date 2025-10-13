@@ -10,14 +10,9 @@ interface GradientBackgroundProps {
   colors?: [string, string, ...string[]];
 }
 
-export default function GradientBackground({ 
-  children, 
-  style, 
-  className,
-  colors 
-}: GradientBackgroundProps) {
+export default function GradientBackground({ children, style, className, colors }: GradientBackgroundProps) {
   const { colors: themeColors } = useTheme();
-  
+
   const gradientColors: [string, string, ...string[]] = colors || [themeColors.primaryStart, themeColors.primaryEnd];
 
   return (

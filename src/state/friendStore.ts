@@ -55,7 +55,7 @@ export const mockUsers: Friend[] = [
     joinDate: "2024-01-15T00:00:00.000Z",
   },
   {
-    id: "user-2", 
+    id: "user-2",
     username: "bob_sports",
     displayName: "Bob Williams",
     profilePhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
@@ -92,48 +92,48 @@ export const useFriendStore = create<FriendState>()(
       friends: [],
       friendRequests: [],
       blockedUsers: [],
-      
+
       addFriend: (friend) => {
         set((state) => ({
           friends: [...state.friends, friend],
         }));
       },
-      
+
       removeFriend: (friendId) => {
         set((state) => ({
-          friends: state.friends.filter(friend => friend.id !== friendId),
+          friends: state.friends.filter((friend) => friend.id !== friendId),
         }));
       },
-      
+
       blockUser: (userId) => {
         set((state) => ({
           blockedUsers: [...state.blockedUsers, userId],
-          friends: state.friends.filter(friend => friend.id !== userId),
+          friends: state.friends.filter((friend) => friend.id !== userId),
         }));
       },
-      
+
       unblockUser: (userId) => {
         set((state) => ({
-          blockedUsers: state.blockedUsers.filter(id => id !== userId),
+          blockedUsers: state.blockedUsers.filter((id) => id !== userId),
         }));
       },
-      
+
       isUserBlocked: (userId) => {
         return get().blockedUsers.includes(userId);
       },
-      
+
       sendFriendRequest: (fromUserId, toUserId) => {
         // Prevent users from adding themselves as friends
         if (fromUserId === toUserId) {
           return;
         }
-        
+
         const existingRequest = get().friendRequests.find(
-          req => req.fromUserId === fromUserId && req.toUserId === toUserId && req.status === "pending"
+          (req) => req.fromUserId === fromUserId && req.toUserId === toUserId && req.status === "pending",
         );
-        
+
         if (existingRequest) return;
-        
+
         const newRequest: FriendRequest = {
           id: `request-${Date.now()}`,
           fromUserId,
@@ -142,29 +142,27 @@ export const useFriendStore = create<FriendState>()(
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        
+
         set((state) => ({
           friendRequests: [...state.friendRequests, newRequest],
         }));
       },
-      
+
       respondToFriendRequest: (requestId, status) => {
-        const request = get().friendRequests.find(req => req.id === requestId);
+        const request = get().friendRequests.find((req) => req.id === requestId);
         if (!request) return;
-        
+
         set((state) => ({
-          friendRequests: state.friendRequests.map(req =>
-            req.id === requestId
-              ? { ...req, status, updatedAt: new Date().toISOString() }
-              : req
+          friendRequests: state.friendRequests.map((req) =>
+            req.id === requestId ? { ...req, status, updatedAt: new Date().toISOString() } : req,
           ),
         }));
-        
+
         if (status === "accepted") {
           // Get user from registered users or mock users
           const registeredUsers = useUserStore.getState().registeredUsers;
-          const registeredUser = registeredUsers.find(u => u.id === request.fromUserId);
-          
+          const registeredUser = registeredUsers.find((u) => u.id === request.fromUserId);
+
           if (registeredUser && registeredUser.profileSetupComplete) {
             // Add registered user as friend
             get().addFriend({
@@ -179,32 +177,32 @@ export const useFriendStore = create<FriendState>()(
             });
           } else {
             // Fallback to mock users
-            const friend = mockUsers.find(user => user.id === request.fromUserId);
+            const friend = mockUsers.find((user) => user.id === request.fromUserId);
             if (friend) {
               get().addFriend(friend);
             }
           }
         }
       },
-      
+
       getFriendRequests: (userId, type) => {
         const requests = get().friendRequests;
-        return type === "sent" 
-          ? requests.filter(req => req.fromUserId === userId)
-          : requests.filter(req => req.toUserId === userId);
+        return type === "sent"
+          ? requests.filter((req) => req.fromUserId === userId)
+          : requests.filter((req) => req.toUserId === userId);
       },
-      
+
       searchUsers: (query, currentUserId) => {
         if (!query.trim()) return [];
-        
+
         const lowerQuery = query.toLowerCase();
         const registeredUsers = useUserStore.getState().registeredUsers;
         const blockedUsers = get().blockedUsers;
-        
+
         // Search through registered users first (only those with completed profiles)
         const searchableRegisteredUsers: Friend[] = registeredUsers
-          .filter(u => u.profileSetupComplete && u.id !== currentUserId && !blockedUsers.includes(u.id))
-          .map(u => ({
+          .filter((u) => u.profileSetupComplete && u.id !== currentUserId && !blockedUsers.includes(u.id))
+          .map((u) => ({
             id: u.id,
             username: u.username,
             displayName: u.displayName,
@@ -215,35 +213,34 @@ export const useFriendStore = create<FriendState>()(
             joinDate: u.joinDate,
           }));
 
-        const matchingRegistered = searchableRegisteredUsers.filter(user => 
-          user.displayName.toLowerCase().includes(lowerQuery) ||
-          user.username.toLowerCase().includes(lowerQuery)
+        const matchingRegistered = searchableRegisteredUsers.filter(
+          (user) =>
+            user.displayName.toLowerCase().includes(lowerQuery) || user.username.toLowerCase().includes(lowerQuery),
         );
 
         // Also include mock users for demo purposes
-        const matchingMock = mockUsers.filter(user => {
+        const matchingMock = mockUsers.filter((user) => {
           // Exclude current user and blocked users from search results
           if (currentUserId && user.id === currentUserId) return false;
           if (blockedUsers.includes(user.id)) return false;
-          
-          return user.displayName.toLowerCase().includes(lowerQuery) ||
-                 user.username.toLowerCase().includes(lowerQuery);
+
+          return (
+            user.displayName.toLowerCase().includes(lowerQuery) || user.username.toLowerCase().includes(lowerQuery)
+          );
         });
 
         // Combine and deduplicate by ID
         const combined = [...matchingRegistered, ...matchingMock];
-        const unique = combined.filter((user, index, self) => 
-          index === self.findIndex(u => u.id === user.id)
-        );
+        const unique = combined.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
 
         return unique;
       },
-      
+
       getUserById: (userId) => {
         // Check registered users first
         const registeredUsers = useUserStore.getState().registeredUsers;
-        const registeredUser = registeredUsers.find(u => u.id === userId && u.profileSetupComplete);
-        
+        const registeredUser = registeredUsers.find((u) => u.id === userId && u.profileSetupComplete);
+
         if (registeredUser) {
           return {
             id: registeredUser.id,
@@ -256,14 +253,14 @@ export const useFriendStore = create<FriendState>()(
             joinDate: registeredUser.joinDate,
           };
         }
-        
+
         // Fallback to mock users
-        return mockUsers.find(user => user.id === userId);
+        return mockUsers.find((user) => user.id === userId);
       },
-      
+
       getFriendById: (friendId) => {
         const friends = get().friends;
-        const found = friends.find(friend => friend.id === friendId);
+        const found = friends.find((friend) => friend.id === friendId);
         // If not found in friends list, check getUserById (which checks registered users and mockUsers)
         return found || get().getUserById(friendId);
       },
@@ -271,6 +268,6 @@ export const useFriendStore = create<FriendState>()(
     {
       name: "friend-storage",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

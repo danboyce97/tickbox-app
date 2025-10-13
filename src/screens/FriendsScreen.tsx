@@ -34,28 +34,26 @@ export default function FriendsScreen() {
 
   if (!user) return null;
 
-  const pendingRequests = getFriendRequests(user.id, "received").filter(req => req.status === "pending");
-  const friendIds = friends.map(f => f.id);
+  const pendingRequests = getFriendRequests(user.id, "received").filter((req) => req.status === "pending");
+  const friendIds = friends.map((f) => f.id);
   const friendMemoriesOnly = getMemoriesByFriend(friendIds);
-  
+
   // Get user's own memories where showOnFeed is true
-  const ownFeedMemories = useMemoryStore.getState().memories.filter(
-    (memory) => memory.userId === user.id && memory.showOnFeed && !memory.isProtected
-  );
-  
+  const ownFeedMemories = useMemoryStore
+    .getState()
+    .memories.filter((memory) => memory.userId === user.id && memory.showOnFeed && !memory.isProtected);
+
   // Combine friend memories and own feed memories, then sort by date
   const allFeedMemories = [...friendMemoriesOnly, ...ownFeedMemories].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
-  
+
   const friendMemories = allFeedMemories.slice(0, 10);
   const searchResults = searchQuery.trim() ? searchUsers(searchQuery, user?.id) : [];
 
   // Calculate unseen activity count
   const unseenCount = user.lastSeenActivityTimestamp
-    ? allFeedMemories.filter(
-        (memory) => new Date(memory.createdAt) > new Date(user.lastSeenActivityTimestamp!)
-      ).length
+    ? allFeedMemories.filter((memory) => new Date(memory.createdAt) > new Date(user.lastSeenActivityTimestamp!)).length
     : allFeedMemories.length;
 
   // Mark activity as seen when user switches to activity tab
@@ -67,12 +65,12 @@ export default function FriendsScreen() {
   };
 
   const handleLike = (memoryId: string) => {
-    const memory = friendMemories.find(m => m.id === memoryId);
+    const memory = friendMemories.find((m) => m.id === memoryId);
     if (!memory || !user) return;
-    
+
     // Prevent users from liking their own memories
     if (memory.userId === user.id) return;
-    
+
     if (memory.likes.includes(user.id)) {
       unlikeMemory(memoryId, user.id);
     } else {
@@ -83,8 +81,8 @@ export default function FriendsScreen() {
   const renderActivityItem = ({ item: memory }: any) => {
     // Check if this is the user's own memory or a friend's memory
     const isOwnMemory = memory.userId === user.id;
-    const friend = isOwnMemory ? null : friends.find(f => f.id === memory.userId);
-    
+    const friend = isOwnMemory ? null : friends.find((f) => f.id === memory.userId);
+
     // If it's not own memory and friend not found, don't render
     if (!isOwnMemory && !friend) return null;
 
@@ -106,9 +104,9 @@ export default function FriendsScreen() {
             </Text>
           </View>
           <Text style={{ color: colors.textMuted }} className="text-xs">
-            {new Date(memory.createdAt).toLocaleDateString("en-US", { 
-              month: "short", 
-              day: "numeric" 
+            {new Date(memory.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
             })}
           </Text>
         </View>
@@ -116,11 +114,7 @@ export default function FriendsScreen() {
         {/* Memory Cover Photo */}
         {memory.coverPhoto && (
           <View style={{ height: 160, marginBottom: 12, borderRadius: 8, overflow: "hidden" }}>
-            <Image 
-              source={{ uri: memory.coverPhoto }} 
-              style={{ width: "100%", height: "100%" }}
-              resizeMode="cover"
-            />
+            <Image source={{ uri: memory.coverPhoto }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
           </View>
         )}
 
@@ -128,7 +122,7 @@ export default function FriendsScreen() {
         <Text style={{ color: colors.text }} className="text-lg font-semibold mb-1">
           {memory.title}
         </Text>
-        
+
         <View className="flex-row items-center mb-2">
           <Ionicons name="location-outline" size={14} color={colors.textSecondary} />
           <Text style={{ color: colors.textSecondary }} className="text-sm ml-1">
@@ -146,40 +140,37 @@ export default function FriendsScreen() {
         {/* Like Button */}
         <View className="flex-row items-center justify-between">
           {memory.userId !== user?.id ? (
-            <Pressable
-              onPress={() => handleLike(memory.id)}
-              className="flex-row items-center"
-            >
+            <Pressable onPress={() => handleLike(memory.id)} className="flex-row items-center">
               <Ionicons
                 name={isLiked ? "heart" : "heart-outline"}
                 size={20}
                 color={isLiked ? colors.primary : colors.textSecondary}
               />
-              <Text style={{ 
-                color: isLiked ? colors.primary : colors.textSecondary,
-                marginLeft: 6,
-                fontWeight: "500"
-              }}>
+              <Text
+                style={{
+                  color: isLiked ? colors.primary : colors.textSecondary,
+                  marginLeft: 6,
+                  fontWeight: "500",
+                }}
+              >
                 {likeCount > 0 ? likeCount : "Like"}
               </Text>
             </Pressable>
           ) : (
             <View className="flex-row items-center">
-              <Ionicons
-                name="heart-outline"
-                size={20}
-                color={colors.textMuted}
-              />
-              <Text style={{ 
-                color: colors.textMuted,
-                marginLeft: 6,
-                fontWeight: "500"
-              }}>
-                {likeCount > 0 ? `${likeCount} like${likeCount > 1 ? 's' : ''}` : "Your memory"}
+              <Ionicons name="heart-outline" size={20} color={colors.textMuted} />
+              <Text
+                style={{
+                  color: colors.textMuted,
+                  marginLeft: 6,
+                  fontWeight: "500",
+                }}
+              >
+                {likeCount > 0 ? `${likeCount} like${likeCount > 1 ? "s" : ""}` : "Your memory"}
               </Text>
             </View>
           )}
-          
+
           {memory.price && (
             <Text style={{ color: colors.primary }} className="font-semibold">
               £{memory.price.toFixed(2)}
@@ -202,7 +193,9 @@ export default function FriendsScreen() {
             @{friend.username}
           </Text>
         </View>
-        <Pressable style={{ backgroundColor: colors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 }}>
+        <Pressable
+          style={{ backgroundColor: colors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 }}
+        >
           <Text className="text-white font-medium">View</Text>
         </Pressable>
       </View>
@@ -210,9 +203,9 @@ export default function FriendsScreen() {
   );
 
   const renderSearchResult = ({ item: searchUser }: any) => {
-    const isAlreadyFriend = friends.some(f => f.id === searchUser.id);
+    const isAlreadyFriend = friends.some((f) => f.id === searchUser.id);
     const hasPendingRequest = friendRequests.some(
-      req => req.fromUserId === user.id && req.toUserId === searchUser.id && req.status === "pending"
+      (req) => req.fromUserId === user.id && req.toUserId === searchUser.id && req.status === "pending",
     );
 
     return (
@@ -228,11 +221,13 @@ export default function FriendsScreen() {
             </Text>
           </View>
           {isAlreadyFriend ? (
-            <Text style={{ color: colors.success }} className="font-medium">Friends</Text>
+            <Text style={{ color: colors.success }} className="font-medium">
+              Friends
+            </Text>
           ) : hasPendingRequest ? (
             <Text style={{ color: colors.textSecondary }}>Requested</Text>
           ) : (
-            <Pressable 
+            <Pressable
               onPress={() => sendFriendRequest(user.id, searchUser.id)}
               style={{ backgroundColor: colors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 }}
             >
@@ -248,7 +243,15 @@ export default function FriendsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       {/* Header with Friend Requests */}
       {pendingRequests.length > 0 && (
-        <View style={{ backgroundColor: `${colors.primary}20`, borderBottomWidth: 1, borderBottomColor: `${colors.primary}40`, paddingHorizontal: 24, paddingVertical: 12 }}>
+        <View
+          style={{
+            backgroundColor: `${colors.primary}20`,
+            borderBottomWidth: 1,
+            borderBottomColor: `${colors.primary}40`,
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+          }}
+        >
           <Text style={{ color: colors.primary }} className="font-medium mb-2">
             {pendingRequests.length} Friend Request{pendingRequests.length > 1 ? "s" : ""}
           </Text>
@@ -257,9 +260,12 @@ export default function FriendsScreen() {
               {pendingRequests.map((request) => {
                 const fromUser = getUserById(request.fromUserId);
                 if (!fromUser) return null;
-                
+
                 return (
-                  <View key={request.id} style={{ backgroundColor: colors.cardBackground, borderRadius: 8, padding: 12, minWidth: 192 }}>
+                  <View
+                    key={request.id}
+                    style={{ backgroundColor: colors.cardBackground, borderRadius: 8, padding: 12, minWidth: 192 }}
+                  >
                     <Text style={{ color: colors.text }} className="font-medium mb-2">
                       {fromUser.displayName}
                     </Text>
@@ -288,7 +294,14 @@ export default function FriendsScreen() {
       )}
 
       {/* Tab Navigation */}
-      <View style={{ flexDirection: "row", backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border }}>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: colors.surface,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
+        }}
+      >
         {[
           { key: "activity", label: "Activity", count: unseenCount },
           { key: "friends", label: "Friends", count: friends.length },
@@ -301,10 +314,12 @@ export default function FriendsScreen() {
             style={activeTab === tab.key ? { borderBottomWidth: 2, borderBottomColor: colors.primary } : {}}
           >
             <View className="items-center">
-              <Text style={{ 
-                fontWeight: "500",
-                color: activeTab === tab.key ? colors.primary : colors.textSecondary 
-              }}>
+              <Text
+                style={{
+                  fontWeight: "500",
+                  color: activeTab === tab.key ? colors.primary : colors.textSecondary,
+                }}
+              >
                 {tab.label}
                 {tab.count > 0 && ` (${tab.count})`}
               </Text>
@@ -342,7 +357,9 @@ export default function FriendsScreen() {
 
       {activeTab === "friends" && (
         <View className="flex-1 px-6 py-4">
-          <Text style={{ color: colors.text }} className="text-xl font-bold mb-4">My Friends</Text>
+          <Text style={{ color: colors.text }} className="text-xl font-bold mb-4">
+            My Friends
+          </Text>
           {friends.length === 0 ? (
             <View className="flex-1 items-center justify-center">
               <Ionicons name="person-add-outline" size={48} color={colors.textMuted} />
@@ -372,10 +389,22 @@ export default function FriendsScreen() {
 
       {activeTab === "find" && (
         <View className="flex-1 px-6 py-4">
-          <Text style={{ color: colors.text }} className="text-xl font-bold mb-4">Find Friends</Text>
-          
+          <Text style={{ color: colors.text }} className="text-xl font-bold mb-4">
+            Find Friends
+          </Text>
+
           {/* Search Bar */}
-          <View className="flex-row items-center mb-4" style={{ backgroundColor: colors.surface, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: colors.border }}>
+          <View
+            className="flex-row items-center mb-4"
+            style={{
+              backgroundColor: colors.surface,
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+          >
             <Ionicons name="search" size={20} color={colors.textMuted} />
             <TextInput
               value={searchQuery}
@@ -416,8 +445,6 @@ export default function FriendsScreen() {
           )}
         </View>
       )}
-
-
     </SafeAreaView>
   );
 }

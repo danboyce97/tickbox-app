@@ -19,7 +19,7 @@ export default function SettingsPrivacyScreen() {
   const setTheme = useUserStore((state) => state.setTheme);
   const setPreferredCurrency = useUserStore((state) => state.setPreferredCurrency);
   const updateNotificationSettings = useUserStore((state) => state.updateNotificationSettings);
-  
+
   const [isNotificationExpanded, setIsNotificationExpanded] = useState(false);
   const [isPrivacyExpanded, setIsPrivacyExpanded] = useState(false);
   const [isDataExpanded, setIsDataExpanded] = useState(false);
@@ -47,7 +47,7 @@ export default function SettingsPrivacyScreen() {
             Alert.alert("Account Deleted", "Your account has been deleted.");
           },
         },
-      ]
+      ],
     );
   };
 
@@ -55,18 +55,15 @@ export default function SettingsPrivacyScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView className="flex-1">
         {/* Header */}
-        <View 
-          className="flex-row items-center px-6 py-4" 
-          style={{ 
-            backgroundColor: colors.surface, 
-            borderBottomWidth: 1, 
-            borderBottomColor: colors.border 
+        <View
+          className="flex-row items-center px-6 py-4"
+          style={{
+            backgroundColor: colors.surface,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
           }}
         >
-          <Pressable
-            onPress={() => navigation.goBack()}
-            className="mr-4"
-          >
+          <Pressable onPress={() => navigation.goBack()} className="mr-4">
             <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
           </Pressable>
           <Text style={{ color: colors.text }} className="text-xl font-bold">
@@ -98,18 +95,15 @@ export default function SettingsPrivacyScreen() {
 
           {/* Privacy Settings */}
           <TickBoxCard style={{ marginBottom: 16 }} noPadding>
-            <Pressable
-              onPress={() => setIsPrivacyExpanded(!isPrivacyExpanded)}
-              style={{ padding: 20 }}
-            >
+            <Pressable onPress={() => setIsPrivacyExpanded(!isPrivacyExpanded)} style={{ padding: 20 }}>
               <View className="flex-row items-center justify-between">
                 <Text style={{ color: colors.text }} className="text-lg font-semibold">
                   Privacy
                 </Text>
-                <Ionicons 
-                  name={isPrivacyExpanded ? "chevron-up" : "chevron-down"} 
-                  size={24} 
-                  color={colors.textSecondary} 
+                <Ionicons
+                  name={isPrivacyExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={colors.textSecondary}
                 />
               </View>
             </Pressable>
@@ -172,18 +166,15 @@ export default function SettingsPrivacyScreen() {
 
           {/* Notification Settings */}
           <TickBoxCard style={{ marginBottom: 16 }} noPadding>
-            <Pressable
-              onPress={() => setIsNotificationExpanded(!isNotificationExpanded)}
-              style={{ padding: 20 }}
-            >
+            <Pressable onPress={() => setIsNotificationExpanded(!isNotificationExpanded)} style={{ padding: 20 }}>
               <View className="flex-row items-center justify-between">
                 <Text style={{ color: colors.text }} className="text-lg font-semibold">
                   Notifications
                 </Text>
-                <Ionicons 
-                  name={isNotificationExpanded ? "chevron-up" : "chevron-down"} 
-                  size={24} 
-                  color={colors.textSecondary} 
+                <Ionicons
+                  name={isNotificationExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={colors.textSecondary}
                 />
               </View>
             </Pressable>
@@ -191,116 +182,116 @@ export default function SettingsPrivacyScreen() {
             {isNotificationExpanded && (
               <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
                 <View className="space-y-3">
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>Push Notifications</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    Master toggle for all notifications
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.pushEnabled}
-                  onValueChange={() => handleNotificationToggle("pushEnabled")}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>Push Notifications</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        Master toggle for all notifications
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.pushEnabled}
+                      onValueChange={() => handleNotificationToggle("pushEnabled")}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>On This Day</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    Reminders of past memories
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.onThisDay}
-                  onValueChange={() => handleNotificationToggle("onThisDay")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>On This Day</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        Reminders of past memories
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.onThisDay}
+                      onValueChange={() => handleNotificationToggle("onThisDay")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>One Week To Go</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    Upcoming event reminders
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.oneWeekToGo}
-                  onValueChange={() => handleNotificationToggle("oneWeekToGo")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>One Week To Go</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        Upcoming event reminders
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.oneWeekToGo}
+                      onValueChange={() => handleNotificationToggle("oneWeekToGo")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>Friend Requests</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    When someone sends you a friend request
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.friendRequests}
-                  onValueChange={() => handleNotificationToggle("friendRequests")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>Friend Requests</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        When someone sends you a friend request
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.friendRequests}
+                      onValueChange={() => handleNotificationToggle("friendRequests")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>New Memories from Friends</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    When friends share new memories
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.newMemories}
-                  onValueChange={() => handleNotificationToggle("newMemories")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>New Memories from Friends</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        When friends share new memories
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.newMemories}
+                      onValueChange={() => handleNotificationToggle("newMemories")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>Memory Likes</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    When someone likes your memories
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.memoriesLiked}
-                  onValueChange={() => handleNotificationToggle("memoriesLiked")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>Memory Likes</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        When someone likes your memories
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.memoriesLiked}
+                      onValueChange={() => handleNotificationToggle("memoriesLiked")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
 
-              <View className="flex-row justify-between items-center py-2">
-                <View className="flex-1">
-                  <Text style={{ color: colors.text }}>Tagged in Memory</Text>
-                  <Text style={{ color: colors.textSecondary }} className="text-sm">
-                    When friends tag you in their memories
-                  </Text>
-                </View>
-                <Switch
-                  value={user.notificationSettings.tagged}
-                  onValueChange={() => handleNotificationToggle("tagged")}
-                  disabled={!user.notificationSettings.pushEnabled}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="white"
-                />
-              </View>
+                  <View className="flex-row justify-between items-center py-2">
+                    <View className="flex-1">
+                      <Text style={{ color: colors.text }}>Tagged in Memory</Text>
+                      <Text style={{ color: colors.textSecondary }} className="text-sm">
+                        When friends tag you in their memories
+                      </Text>
+                    </View>
+                    <Switch
+                      value={user.notificationSettings.tagged}
+                      onValueChange={() => handleNotificationToggle("tagged")}
+                      disabled={!user.notificationSettings.pushEnabled}
+                      trackColor={{ false: colors.border, true: colors.primary }}
+                      thumbColor="white"
+                    />
+                  </View>
                 </View>
               </View>
             )}
@@ -308,18 +299,15 @@ export default function SettingsPrivacyScreen() {
 
           {/* My Account Settings */}
           <TickBoxCard noPadding>
-            <Pressable
-              onPress={() => setIsDataExpanded(!isDataExpanded)}
-              style={{ padding: 20 }}
-            >
+            <Pressable onPress={() => setIsDataExpanded(!isDataExpanded)} style={{ padding: 20 }}>
               <View className="flex-row items-center justify-between">
                 <Text style={{ color: colors.text }} className="text-lg font-semibold">
                   My Account
                 </Text>
-                <Ionicons 
-                  name={isDataExpanded ? "chevron-up" : "chevron-down"} 
-                  size={24} 
-                  color={colors.textSecondary} 
+                <Ionicons
+                  name={isDataExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={colors.textSecondary}
                 />
               </View>
             </Pressable>
@@ -327,9 +315,9 @@ export default function SettingsPrivacyScreen() {
             {isDataExpanded && (
               <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
                 {/* My Details */}
-                <Pressable 
+                <Pressable
                   onPress={() => navigation.navigate("MyDetails" as never)}
-                  style={{ 
+                  style={{
                     paddingVertical: 12,
                     borderBottomWidth: 1,
                     borderBottomColor: colors.border,
@@ -350,9 +338,9 @@ export default function SettingsPrivacyScreen() {
                 </Pressable>
 
                 {/* Preferred Currency */}
-                <Pressable 
+                <Pressable
                   onPress={() => setShowCurrencyModal(true)}
-                  style={{ 
+                  style={{
                     paddingVertical: 12,
                     borderBottomWidth: 1,
                     borderBottomColor: colors.border,
@@ -397,13 +385,13 @@ export default function SettingsPrivacyScreen() {
         transparent={true}
         onRequestClose={() => setShowCurrencyModal(false)}
       >
-        <Pressable 
+        <Pressable
           style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "flex-end" }}
           onPress={() => setShowCurrencyModal(false)}
         >
           <Pressable onPress={(e) => e.stopPropagation()}>
-            <View 
-              style={{ 
+            <View
+              style={{
                 backgroundColor: colors.background,
                 borderTopLeftRadius: 24,
                 borderTopRightRadius: 24,
@@ -413,13 +401,13 @@ export default function SettingsPrivacyScreen() {
             >
               {/* Handle Bar */}
               <View className="items-center py-3">
-                <View 
-                  style={{ 
-                    width: 40, 
-                    height: 4, 
-                    backgroundColor: colors.border, 
-                    borderRadius: 2 
-                  }} 
+                <View
+                  style={{
+                    width: 40,
+                    height: 4,
+                    backgroundColor: colors.border,
+                    borderRadius: 2,
+                  }}
                 />
               </View>
 
@@ -458,7 +446,7 @@ export default function SettingsPrivacyScreen() {
                   >
                     <View className="flex-row items-center justify-between">
                       <View className="flex-row items-center flex-1">
-                        <View 
+                        <View
                           style={{
                             width: 40,
                             height: 40,
@@ -469,16 +457,14 @@ export default function SettingsPrivacyScreen() {
                             marginRight: 12,
                           }}
                         >
-                          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
-                            {currency.symbol}
-                          </Text>
+                          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>{currency.symbol}</Text>
                         </View>
                         <View className="flex-1">
-                          <Text 
-                            style={{ 
-                              color: colors.text, 
-                              fontSize: 16, 
-                              fontWeight: user.preferredCurrency === currency.code ? "600" : "500" 
+                          <Text
+                            style={{
+                              color: colors.text,
+                              fontSize: 16,
+                              fontWeight: user.preferredCurrency === currency.code ? "600" : "500",
                             }}
                           >
                             {currency.code}
@@ -518,7 +504,7 @@ export default function SettingsPrivacyScreen() {
                   >
                     <View className="flex-row items-center justify-between">
                       <View className="flex-row items-center flex-1">
-                        <View 
+                        <View
                           style={{
                             width: 40,
                             height: 40,
@@ -529,16 +515,14 @@ export default function SettingsPrivacyScreen() {
                             marginRight: 12,
                           }}
                         >
-                          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
-                            {currency.symbol}
-                          </Text>
+                          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>{currency.symbol}</Text>
                         </View>
                         <View className="flex-1">
-                          <Text 
-                            style={{ 
-                              color: colors.text, 
-                              fontSize: 16, 
-                              fontWeight: user.preferredCurrency === currency.code ? "600" : "500" 
+                          <Text
+                            style={{
+                              color: colors.text,
+                              fontSize: 16,
+                              fontWeight: user.preferredCurrency === currency.code ? "600" : "500",
                             }}
                           >
                             {currency.code}

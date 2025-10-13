@@ -64,7 +64,7 @@ export const useMemoryStore = create<MemoryState>()(
         const now = new Date().toISOString();
         const eventDate = new Date(memoryData.date);
         const isQRProtected = memoryData.type === "uploaded" && eventDate > new Date();
-        
+
         const newMemory: Memory = {
           ...memoryData,
           id: uuidv4(),
@@ -73,16 +73,16 @@ export const useMemoryStore = create<MemoryState>()(
           isProtected: isQRProtected,
           likes: [],
         };
-        
+
         // Schedule notifications for the memory
         scheduleMemoryNotifications(
           newMemory.id,
           newMemory.userId,
           newMemory.title,
           new Date(newMemory.date),
-          newMemory.taggedFriends
+          newMemory.taggedFriends,
         );
-        
+
         set((state) => ({
           memories: [...state.memories, newMemory],
         }));
@@ -90,9 +90,7 @@ export const useMemoryStore = create<MemoryState>()(
       updateMemory: (id, updates) => {
         set((state) => ({
           memories: state.memories.map((memory) =>
-            memory.id === id
-              ? { ...memory, ...updates, updatedAt: new Date().toISOString() }
-              : memory
+            memory.id === id ? { ...memory, ...updates, updatedAt: new Date().toISOString() } : memory,
           ),
         }));
       },
@@ -106,16 +104,14 @@ export const useMemoryStore = create<MemoryState>()(
           memories: state.memories.map((memory) =>
             memory.id === memoryId && !memory.likes.includes(userId)
               ? { ...memory, likes: [...memory.likes, userId] }
-              : memory
+              : memory,
           ),
         }));
       },
       unlikeMemory: (memoryId, userId) => {
         set((state) => ({
           memories: state.memories.map((memory) =>
-            memory.id === memoryId
-              ? { ...memory, likes: memory.likes.filter((id) => id !== userId) }
-              : memory
+            memory.id === memoryId ? { ...memory, likes: memory.likes.filter((id) => id !== userId) } : memory,
           ),
         }));
       },
@@ -123,56 +119,44 @@ export const useMemoryStore = create<MemoryState>()(
         return get().memories.filter((memory) => memory.userId === userId);
       },
       getMemoriesByFriend: (friendIds) => {
-        return get().memories.filter(
-          (memory) => 
-            friendIds.includes(memory.userId) && 
-            !memory.isProtected
-        );
+        return get().memories.filter((memory) => friendIds.includes(memory.userId) && !memory.isProtected);
       },
       searchMemories: (query, userId) => {
         const userMemories = get().getMemoriesByUser(userId);
         if (!query.trim()) return userMemories;
-        
+
         const lowercaseQuery = query.toLowerCase();
         return userMemories.filter(
           (memory) =>
             memory.title.toLowerCase().includes(lowercaseQuery) ||
             memory.location.toLowerCase().includes(lowercaseQuery) ||
-            memory.category.toLowerCase().includes(lowercaseQuery)
+            memory.category.toLowerCase().includes(lowercaseQuery),
         );
       },
       filterMemories: ({ userId, dateFilter = "all", category, sortBy = "date" }) => {
         let filteredMemories = get().getMemoriesByUser(userId);
-        
+
         // Date filtering
         const now = new Date();
         const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        
+
         switch (dateFilter) {
           case "thisWeek":
-            filteredMemories = filteredMemories.filter(
-              (memory) => new Date(memory.date) >= oneWeekAgo
-            );
+            filteredMemories = filteredMemories.filter((memory) => new Date(memory.date) >= oneWeekAgo);
             break;
           case "upcoming":
-            filteredMemories = filteredMemories.filter(
-              (memory) => new Date(memory.date) > now
-            );
+            filteredMemories = filteredMemories.filter((memory) => new Date(memory.date) > now);
             break;
           case "past":
-            filteredMemories = filteredMemories.filter(
-              (memory) => new Date(memory.date) <= now
-            );
+            filteredMemories = filteredMemories.filter((memory) => new Date(memory.date) <= now);
             break;
         }
-        
+
         // Category filtering
         if (category && category !== "All") {
-          filteredMemories = filteredMemories.filter(
-            (memory) => memory.category === category
-          );
+          filteredMemories = filteredMemories.filter((memory) => memory.category === category);
         }
-        
+
         // Sorting
         switch (sortBy) {
           case "date":
@@ -188,7 +172,7 @@ export const useMemoryStore = create<MemoryState>()(
             filteredMemories.sort((a, b) => a.title.localeCompare(b.title));
             break;
         }
-        
+
         return filteredMemories;
       },
       renameCategoryInMemories: (oldName, newName, userId) => {
@@ -196,7 +180,7 @@ export const useMemoryStore = create<MemoryState>()(
           memories: state.memories.map((memory) =>
             memory.userId === userId && memory.category === oldName
               ? { ...memory, category: newName, updatedAt: new Date().toISOString() }
-              : memory
+              : memory,
           ),
         }));
       },
@@ -205,7 +189,7 @@ export const useMemoryStore = create<MemoryState>()(
           memories: state.memories.map((memory) =>
             memory.userId === userId && memory.category === categoryName
               ? { ...memory, category: defaultCategory, updatedAt: new Date().toISOString() }
-              : memory
+              : memory,
           ),
         }));
       },
@@ -213,6 +197,6 @@ export const useMemoryStore = create<MemoryState>()(
     {
       name: "memory-storage",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

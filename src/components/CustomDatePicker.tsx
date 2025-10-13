@@ -79,7 +79,7 @@ export default function CustomDatePicker({
           {label} {required && <Text style={{ color: colors.error }}>*</Text>}
         </Text>
       )}
-      
+
       <Pressable
         onPress={() => setShowPicker(true)}
         style={{
@@ -104,22 +104,15 @@ export default function CustomDatePicker({
             {getRelativeDate(date)}
           </Text>
           {!isToday(date) && !isYesterday(date) && !isTomorrow(date) && (
-            <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>
-              {formatDate(date)}
-            </Text>
+            <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{formatDate(date)}</Text>
           )}
         </View>
-        
+
         <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
       </Pressable>
 
       {/* Date Picker Modal */}
-      <Modal
-        visible={showPicker}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleCancel}
-      >
+      <Modal visible={showPicker} transparent={true} animationType="fade" onRequestClose={handleCancel}>
         <View
           style={{
             flex: 1,
@@ -145,7 +138,7 @@ export default function CustomDatePicker({
             <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4 text-center">
               Select Date
             </Text>
-            
+
             <DateTimePicker
               value={tempDate}
               mode="date"
@@ -154,7 +147,7 @@ export default function CustomDatePicker({
               textColor={colors.text}
               style={{ backgroundColor: colors.background }}
             />
-            
+
             <View className="flex-row justify-end mt-6 space-x-3">
               <Pressable
                 onPress={handleCancel}
@@ -171,7 +164,7 @@ export default function CustomDatePicker({
                   Cancel
                 </Text>
               </Pressable>
-              
+
               <Pressable
                 onPress={handleConfirm}
                 style={{

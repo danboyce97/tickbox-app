@@ -8,44 +8,55 @@ import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext";
 import { initializeRevenueCat, setupCustomerInfoListener } from "./src/services/revenueCat";
 import { useSubscriptionStore } from "./src/state/subscriptionStore";
 import { useUserStore } from "./src/state/userStore";
+import { PurchasesService } from "./src/api/purchases-services";
+import { ThemedApp"} from "ThemedApp"
 
-function ThemedApp() {
   const { isDark } = useTheme();
-  const user = useUserStore((state) => state.user);
-  const checkAndUpdateStatus = useSubscriptionStore((state) => state.checkAndUpdateStatus);
-  const setCustomerInfo = useSubscriptionStore((state) => state.setCustomerInfo);
-  
+  const user = useUserStore((state: { user: any; }) => state.user);
+  const checkAndUpdateStatus = useSubscriptionStore((state: { checkAndUpdateStatus: any; }) => state.checkAndUpdateStatus);
+  const setCustomerInfo = useSubscriptionStore((state: { setCustomerInfo: any; }) => state.setCustomerInfo);
+
   useEffect(() => {
     // Initialize RevenueCat when user is available
     const initRevenueCat = async () => {
       if (!user?.id) return;
-      
+
       try {
         // Add significant delay to ensure native modules are fully ready
         // Increased to 2 seconds for better reliability
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
         await initializeRevenueCat(user.id);
-        
+
         // Check initial subscription status
         await checkAndUpdateStatus();
-        
+
         // Set up listener for subscription changes
         const listener = (customerInfo: any) => {
           setCustomerInfo(customerInfo);
         };
-        
+
         setupCustomerInfoListener(listener);
-        
       } catch (error) {
         // Silently handle errors - app continues without premium features
-        console.log('RevenueCat initialization skipped or failed - continuing without premium features');
+        console.log("RevenueCat initialization skipped or failed - continuing without premium features");
       }
     };
 
     initRevenueCat();
   }, [user?.id]);
-  
+  useEffect(() => {
+    const initializeServices = async () => {
+      const user = useUserStore.getState().user;
+      if (user) {
+        await PurchasesService.initialize(user.id);
+        await useUserStore.getState().updatePremiumStatus();
+      }
+    };
+
+    initializeServices();
+  }, []);
+
   return (
     <>
       <NavigationContainer>
@@ -81,7 +92,7 @@ export default function App() {
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaProvider>
-        <ThemeProvider>
+        <ThemeProvider 
           <ThemedApp />
         </ThemeProvider>
       </SafeAreaProvider>

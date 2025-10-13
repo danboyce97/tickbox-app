@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput, Alert, Image, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  TextInput,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -70,16 +80,12 @@ export default function EditProfileScreen() {
   };
 
   const showImagePicker = () => {
-    Alert.alert(
-      "Update Profile Photo",
-      "Choose an option",
-      [
-        { text: "Camera", onPress: takePhoto },
-        { text: "Photo Library", onPress: pickImage },
-        { text: "Remove Photo", onPress: () => setProfilePhoto(""), style: "destructive" },
-        { text: "Cancel", style: "cancel" }
-      ]
-    );
+    Alert.alert("Update Profile Photo", "Choose an option", [
+      { text: "Camera", onPress: takePhoto },
+      { text: "Photo Library", onPress: pickImage },
+      { text: "Remove Photo", onPress: () => setProfilePhoto(""), style: "destructive" },
+      { text: "Cancel", style: "cancel" },
+    ]);
   };
 
   const handleSave = async () => {
@@ -97,9 +103,7 @@ export default function EditProfileScreen() {
         profilePhoto: profilePhoto || undefined,
       });
 
-      Alert.alert("Success", "Profile updated successfully", [
-        { text: "OK", onPress: () => navigation.goBack() }
-      ]);
+      Alert.alert("Success", "Profile updated successfully", [{ text: "OK", onPress: () => navigation.goBack() }]);
     } catch (error) {
       Alert.alert("Error", "Failed to update profile. Please try again.");
     } finally {
@@ -125,211 +129,206 @@ export default function EditProfileScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={0}
       >
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <View className="p-6">
-          {/* Profile Photo Section */}
-          <TickBoxCard style={{ marginBottom: 24 }}>
-            <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
-              Profile Photo
-            </Text>
-            <View className="items-center">
-              <Pressable
-                onPress={showImagePicker}
-                className="relative mb-4"
-              >
-                {profilePhoto ? (
-                  <Image
-                    source={{ uri: profilePhoto }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 50,
-                      backgroundColor: colors.border,
-                    }}
-                  />
-                ) : (
+          <View className="p-6">
+            {/* Profile Photo Section */}
+            <TickBoxCard style={{ marginBottom: 24 }}>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
+                Profile Photo
+              </Text>
+              <View className="items-center">
+                <Pressable onPress={showImagePicker} className="relative mb-4">
+                  {profilePhoto ? (
+                    <Image
+                      source={{ uri: profilePhoto }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 50,
+                        backgroundColor: colors.border,
+                      }}
+                    />
+                  ) : (
+                    <View
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 50,
+                        backgroundColor: colors.border,
+                      }}
+                      className="items-center justify-center"
+                    >
+                      <Ionicons name="person" size={40} color={colors.textSecondary} />
+                    </View>
+                  )}
+
                   <View
                     style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 50,
-                      backgroundColor: colors.border,
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      backgroundColor: colors.primary,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 16,
                     }}
                     className="items-center justify-center"
                   >
-                    <Ionicons name="person" size={40} color={colors.textSecondary} />
+                    <Ionicons name="camera" size={16} color="white" />
                   </View>
-                )}
-                
-                <View
+                </Pressable>
+
+                <Text style={{ color: colors.textSecondary }} className="text-center text-sm">
+                  Tap to change photo
+                </Text>
+              </View>
+            </TickBoxCard>
+
+            {/* Basic Information */}
+            <TickBoxCard style={{ marginBottom: 24 }}>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
+                Basic Information
+              </Text>
+
+              <View className="mb-4">
+                <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
+                  Name *
+                </Text>
+                <TextInput
                   style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    backgroundColor: colors.primary,
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderRadius: 8,
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: colors.border,
                   }}
-                  className="items-center justify-center"
-                >
-                  <Ionicons name="camera" size={16} color="white" />
-                </View>
-              </Pressable>
-              
-              <Text style={{ color: colors.textSecondary }} className="text-center text-sm">
-                Tap to change photo
-              </Text>
-            </View>
-          </TickBoxCard>
+                  value={displayName}
+                  onChangeText={setDisplayName}
+                  placeholder="Your name"
+                  placeholderTextColor={colors.textSecondary}
+                  maxLength={50}
+                />
+              </View>
 
-          {/* Basic Information */}
-          <TickBoxCard style={{ marginBottom: 24 }}>
-            <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
-              Basic Information
+              <View className="mb-4">
+                <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
+                  Location
+                </Text>
+                <TextInput
+                  style={{
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderRadius: 8,
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                  }}
+                  value={location}
+                  onChangeText={setLocation}
+                  placeholder="City, Country"
+                  placeholderTextColor={colors.textSecondary}
+                  maxLength={100}
+                />
+              </View>
+
+              <View className="mb-0">
+                <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
+                  Bio
+                </Text>
+                <TextInput
+                  style={{
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderRadius: 8,
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    minHeight: 80,
+                    textAlignVertical: "top",
+                  }}
+                  value={bio}
+                  onChangeText={setBio}
+                  placeholder="Tell others about yourself..."
+                  placeholderTextColor={colors.textSecondary}
+                  multiline={true}
+                  maxLength={200}
+                />
+                <Text style={{ color: colors.textMuted }} className="text-xs mt-1 text-right">
+                  {bio.length}/200
+                </Text>
+              </View>
+            </TickBoxCard>
+
+            {/* Account Information (Read Only) */}
+            <TickBoxCard style={{ marginBottom: 24 }}>
+              <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
+                Account Information
+              </Text>
+
+              <View className="mb-3">
+                <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
+                  Username
+                </Text>
+                <Text style={{ color: colors.text }} className="text-base">
+                  @{user.username}
+                </Text>
+              </View>
+
+              <View className="mb-3">
+                <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
+                  Email
+                </Text>
+                <Text style={{ color: colors.text }} className="text-base">
+                  {user.email}
+                </Text>
+              </View>
+
+              <View>
+                <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
+                  Member Since
+                </Text>
+                <Text style={{ color: colors.text }} className="text-base">
+                  {new Date(user.joinDate).toLocaleDateString()}
+                </Text>
+              </View>
+            </TickBoxCard>
+          </View>
+        </ScrollView>
+
+        {/* Action Buttons */}
+        <View
+          className="p-6 flex-row"
+          style={{
+            backgroundColor: colors.background,
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+          }}
+        >
+          <Pressable
+            onPress={handleCancel}
+            className="flex-1 mr-3 py-3 rounded-lg"
+            style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}
+          >
+            <Text style={{ color: colors.textSecondary }} className="text-center font-medium">
+              Cancel
             </Text>
-            
-            <View className="mb-4">
-              <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
-                Name *
-              </Text>
-              <TextInput
-                style={{
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderRadius: 8,
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                }}
-                value={displayName}
-                onChangeText={setDisplayName}
-                placeholder="Your name"
-                placeholderTextColor={colors.textSecondary}
-                maxLength={50}
-              />
-            </View>
+          </Pressable>
 
-            <View className="mb-4">
-              <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
-                Location
-              </Text>
-              <TextInput
-                style={{
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderRadius: 8,
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                }}
-                value={location}
-                onChangeText={setLocation}
-                placeholder="City, Country"
-                placeholderTextColor={colors.textSecondary}
-                maxLength={100}
-              />
-            </View>
-
-            <View className="mb-0">
-              <Text style={{ color: colors.text }} className="text-sm font-medium mb-2">
-                Bio
-              </Text>
-              <TextInput
-                style={{
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderRadius: 8,
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                  minHeight: 80,
-                  textAlignVertical: "top",
-                }}
-                value={bio}
-                onChangeText={setBio}
-                placeholder="Tell others about yourself..."
-                placeholderTextColor={colors.textSecondary}
-                multiline={true}
-                maxLength={200}
-              />
-              <Text style={{ color: colors.textMuted }} className="text-xs mt-1 text-right">
-                {bio.length}/200
-              </Text>
-            </View>
-          </TickBoxCard>
-
-          {/* Account Information (Read Only) */}
-          <TickBoxCard style={{ marginBottom: 24 }}>
-            <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
-              Account Information
-            </Text>
-            
-            <View className="mb-3">
-              <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
-                Username
-              </Text>
-              <Text style={{ color: colors.text }} className="text-base">
-                @{user.username}
-              </Text>
-            </View>
-
-            <View className="mb-3">
-              <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
-                Email
-              </Text>
-              <Text style={{ color: colors.text }} className="text-base">
-                {user.email}
-              </Text>
-            </View>
-
-            <View>
-              <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
-                Member Since
-              </Text>
-              <Text style={{ color: colors.text }} className="text-base">
-                {new Date(user.joinDate).toLocaleDateString()}
-              </Text>
-            </View>
-          </TickBoxCard>
+          <Pressable
+            onPress={handleSave}
+            disabled={isLoading}
+            className="flex-1 ml-3 py-3 rounded-lg"
+            style={{ backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }}
+          >
+            <Text className="text-white text-center font-medium">{isLoading ? "Saving..." : "Save Changes"}</Text>
+          </Pressable>
         </View>
-      </ScrollView>
-
-      {/* Action Buttons */}
-      <View 
-        className="p-6 flex-row"
-        style={{ 
-          backgroundColor: colors.background,
-          borderTopWidth: 1,
-          borderTopColor: colors.border 
-        }}
-      >
-        <Pressable
-          onPress={handleCancel}
-          className="flex-1 mr-3 py-3 rounded-lg"
-          style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}
-        >
-          <Text style={{ color: colors.textSecondary }} className="text-center font-medium">
-            Cancel
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={handleSave}
-          disabled={isLoading}
-          className="flex-1 ml-3 py-3 rounded-lg"
-          style={{ backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }}
-        >
-          <Text className="text-white text-center font-medium">
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Text>
-        </Pressable>
-      </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

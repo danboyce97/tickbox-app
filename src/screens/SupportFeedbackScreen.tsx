@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput, Linking, Alert, Modal, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  TextInput,
+  Linking,
+  Alert,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -27,8 +38,9 @@ export default function SupportFeedbackScreen() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Hi! I'm your TickBox AI assistant. How can I help you today? If I can't answer your question, I'll direct you to our support team at support@tickboxapp.com."
-    }
+      content:
+        "Hi! I'm your TickBox AI assistant. How can I help you today? If I can't answer your question, I'll direct you to our support team at support@tickboxapp.com.",
+    },
   ]);
   const [chatInput, setChatInput] = useState("");
   const [isLoadingChat, setIsLoadingChat] = useState(false);
@@ -46,12 +58,12 @@ export default function SupportFeedbackScreen() {
       return;
     }
 
-    const categoryLabel = feedbackCategories.find(c => c.id === selectedCategory)?.label || selectedCategory;
+    const categoryLabel = feedbackCategories.find((c) => c.id === selectedCategory)?.label || selectedCategory;
     const subject = encodeURIComponent(`TickBox ${categoryLabel}`);
     const body = encodeURIComponent(feedbackText);
-    
+
     Linking.openURL(`mailto:support@tickboxapp.com?subject=${subject}&body=${body}`);
-    
+
     // Clear form after opening email
     setTimeout(() => {
       setFeedbackText("");
@@ -72,44 +84,46 @@ export default function SupportFeedbackScreen() {
 
     const userMessage: ChatMessage = {
       role: "user",
-      content: chatInput
+      content: chatInput,
     };
 
-    setChatMessages(prev => [...prev, userMessage]);
+    setChatMessages((prev) => [...prev, userMessage]);
     setChatInput("");
     setIsLoadingChat(true);
 
     try {
-      const systemPrompt = "You are a helpful customer support assistant for TickBox, an app that helps users create and store memories of events they attend. Answer questions about the app features, help with troubleshooting, and guide users. If you cannot answer a question, politely suggest they contact support@tickboxapp.com. Keep responses concise and friendly.";
-      
+      const systemPrompt =
+        "You are a helpful customer support assistant for TickBox, an app that helps users create and store memories of events they attend. Answer questions about the app features, help with troubleshooting, and guide users. If you cannot answer a question, politely suggest they contact support@tickboxapp.com. Keep responses concise and friendly.";
+
       const aiMessages: AIMessage[] = [
         { role: "user", content: systemPrompt },
-        ...chatMessages.map(msg => ({
+        ...chatMessages.map((msg) => ({
           role: msg.role,
-          content: msg.content
+          content: msg.content,
         })),
-        { role: "user", content: chatInput }
+        { role: "user", content: chatInput },
       ];
 
       const response = await getAnthropicTextResponse(aiMessages, {
         model: "claude-3-5-sonnet-20240620",
         temperature: 0.7,
-        maxTokens: 500
+        maxTokens: 500,
       });
 
       const assistantMessage: ChatMessage = {
         role: "assistant",
-        content: response.content
+        content: response.content,
       };
 
-      setChatMessages(prev => [...prev, assistantMessage]);
+      setChatMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("AI Chat Error:", error);
       const errorMessage: ChatMessage = {
         role: "assistant",
-        content: "I'm having trouble connecting right now. Please try again or email our support team at support@tickboxapp.com for immediate assistance."
+        content:
+          "I'm having trouble connecting right now. Please try again or email our support team at support@tickboxapp.com for immediate assistance.",
       };
-      setChatMessages(prev => [...prev, errorMessage]);
+      setChatMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoadingChat(false);
     }
@@ -119,18 +133,15 @@ export default function SupportFeedbackScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView className="flex-1">
         {/* Header */}
-        <View 
-          className="flex-row items-center px-6 py-4" 
-          style={{ 
-            backgroundColor: colors.surface, 
-            borderBottomWidth: 1, 
-            borderBottomColor: colors.border 
+        <View
+          className="flex-row items-center px-6 py-4"
+          style={{
+            backgroundColor: colors.surface,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
           }}
         >
-          <Pressable
-            onPress={() => navigation.goBack()}
-            className="mr-4"
-          >
+          <Pressable onPress={() => navigation.goBack()} className="mr-4">
             <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
           </Pressable>
           <Text style={{ color: colors.text }} className="text-xl font-bold">
@@ -144,13 +155,13 @@ export default function SupportFeedbackScreen() {
             <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
               Quick Help
             </Text>
-            
+
             <View className="space-y-3">
-              <Pressable 
-                className="flex-row items-center py-3"
-                onPress={() => setShowAIChat(true)}
-              >
-                <View style={{ backgroundColor: colors.primary + "20" }} className="w-10 h-10 rounded-full items-center justify-center mr-4">
+              <Pressable className="flex-row items-center py-3" onPress={() => setShowAIChat(true)}>
+                <View
+                  style={{ backgroundColor: colors.primary + "20" }}
+                  className="w-10 h-10 rounded-full items-center justify-center mr-4"
+                >
                   <Ionicons name="chatbubbles-outline" size={20} color={colors.primary} />
                 </View>
                 <View className="flex-1">
@@ -161,12 +172,12 @@ export default function SupportFeedbackScreen() {
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
               </Pressable>
-              
-              <Pressable 
-                className="flex-row items-center py-3"
-                onPress={openWebsite}
-              >
-                <View style={{ backgroundColor: colors.primary + "20" }} className="w-10 h-10 rounded-full items-center justify-center mr-4">
+
+              <Pressable className="flex-row items-center py-3" onPress={openWebsite}>
+                <View
+                  style={{ backgroundColor: colors.primary + "20" }}
+                  className="w-10 h-10 rounded-full items-center justify-center mr-4"
+                >
                   <Ionicons name="help-circle-outline" size={20} color={colors.primary} />
                 </View>
                 <View className="flex-1">
@@ -177,12 +188,12 @@ export default function SupportFeedbackScreen() {
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
               </Pressable>
-              
-              <Pressable 
-                className="flex-row items-center py-3"
-                onPress={openEmail}
-              >
-                <View style={{ backgroundColor: colors.primary + "20" }} className="w-10 h-10 rounded-full items-center justify-center mr-4">
+
+              <Pressable className="flex-row items-center py-3" onPress={openEmail}>
+                <View
+                  style={{ backgroundColor: colors.primary + "20" }}
+                  className="w-10 h-10 rounded-full items-center justify-center mr-4"
+                >
                   <Ionicons name="mail-outline" size={20} color={colors.primary} />
                 </View>
                 <View className="flex-1">
@@ -201,7 +212,7 @@ export default function SupportFeedbackScreen() {
             <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
               Send Feedback
             </Text>
-            
+
             {/* Feedback Categories */}
             <Text style={{ color: colors.text }} className="font-medium mb-3">
               What type of feedback?
@@ -268,13 +279,8 @@ export default function SupportFeedbackScreen() {
 
             {/* Submit Button */}
             <GradientBackground style={{ borderRadius: 12 }}>
-              <Pressable
-                onPress={handleSubmitFeedback}
-                style={{ paddingVertical: 16 }}
-              >
-                <Text className="text-white text-center font-semibold text-base">
-                  Submit Feedback
-                </Text>
+              <Pressable onPress={handleSubmitFeedback} style={{ paddingVertical: 16 }}>
+                <Text className="text-white text-center font-semibold text-base">Submit Feedback</Text>
               </Pressable>
             </GradientBackground>
           </TickBoxCard>
@@ -304,7 +310,10 @@ export default function SupportFeedbackScreen() {
               }}
             >
               <View className="flex-row items-center">
-                <View style={{ backgroundColor: colors.primary + "20" }} className="w-10 h-10 rounded-full items-center justify-center mr-3">
+                <View
+                  style={{ backgroundColor: colors.primary + "20" }}
+                  className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                >
                   <Ionicons name="chatbubbles" size={20} color={colors.primary} />
                 </View>
                 <View>
@@ -354,10 +363,7 @@ export default function SupportFeedbackScreen() {
                 </View>
               ))}
               {isLoadingChat && (
-                <View
-                  className="mb-4"
-                  style={{ alignSelf: "flex-start", maxWidth: "80%" }}
-                >
+                <View className="mb-4" style={{ alignSelf: "flex-start", maxWidth: "80%" }}>
                   <View
                     style={{
                       backgroundColor: colors.surface,

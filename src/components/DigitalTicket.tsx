@@ -27,8 +27,8 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
   const qrPattern = generateQRPattern();
 
   return (
-    <View 
-      style={{ 
+    <View
+      style={{
         backgroundColor: colors.surface,
         borderRadius: 16,
         padding: 24,
@@ -40,8 +40,8 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
     >
       {/* Ticket Header */}
       <View className="items-center mb-6">
-        <View 
-          style={{ 
+        <View
+          style={{
             backgroundColor: `${colors.primary}20`,
             paddingHorizontal: 16,
             paddingVertical: 8,
@@ -49,27 +49,21 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
             marginBottom: 12,
           }}
         >
-          <Text style={{ color: colors.primary, fontWeight: "600", fontSize: 12 }}>
-            DIGITAL TICKET
-          </Text>
+          <Text style={{ color: colors.primary, fontWeight: "600", fontSize: 12 }}>DIGITAL TICKET</Text>
         </View>
-        
+
         <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 4 }}>
           {memory.title}
         </Text>
-        
-        <Text style={{ color: colors.textSecondary, fontSize: 14, textAlign: "center" }}>
-          {memory.location}
-        </Text>
+
+        <Text style={{ color: colors.textSecondary, fontSize: 14, textAlign: "center" }}>{memory.location}</Text>
       </View>
 
       {/* Ticket Details */}
       <View className="mb-6">
         <View className="flex-row justify-between mb-3">
           <View className="flex-1">
-            <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-              DATE
-            </Text>
+            <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>DATE</Text>
             <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
               {new Date(memory.date).toLocaleDateString("en-US", {
                 weekday: "short",
@@ -79,34 +73,24 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
               })}
             </Text>
           </View>
-          
+
           {memory.time && (
             <View className="flex-1">
-              <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                TIME
-              </Text>
-              <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
-                {memory.time}
-              </Text>
+              <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>TIME</Text>
+              <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>{memory.time}</Text>
             </View>
           )}
         </View>
 
         <View className="flex-row justify-between mb-3">
           <View className="flex-1">
-            <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-              CATEGORY
-            </Text>
-            <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
-              {memory.category}
-            </Text>
+            <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>CATEGORY</Text>
+            <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>{memory.category}</Text>
           </View>
-          
+
           {memory.price && (
             <View className="flex-1">
-              <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                PRICE
-              </Text>
+              <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>PRICE</Text>
               <Text style={{ color: colors.primary, fontSize: 14, fontWeight: "600" }}>
                 {memory.currency} {memory.price.toFixed(2)}
               </Text>
@@ -119,45 +103,31 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
           <View className="flex-row justify-between">
             {memory.seatingInfo.entrance && (
               <View className="flex-1">
-                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                  ENTRANCE
-                </Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>ENTRANCE</Text>
                 <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
                   {memory.seatingInfo.entrance}
                 </Text>
               </View>
             )}
-            
+
             {memory.seatingInfo.block && (
               <View className="flex-1">
-                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                  BLOCK
-                </Text>
-                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
-                  {memory.seatingInfo.block}
-                </Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>BLOCK</Text>
+                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>{memory.seatingInfo.block}</Text>
               </View>
             )}
-            
+
             {memory.seatingInfo.row && (
               <View className="flex-1">
-                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                  ROW
-                </Text>
-                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
-                  {memory.seatingInfo.row}
-                </Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>ROW</Text>
+                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>{memory.seatingInfo.row}</Text>
               </View>
             )}
-            
+
             {memory.seatingInfo.seat && (
               <View className="flex-1">
-                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>
-                  SEAT
-                </Text>
-                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>
-                  {memory.seatingInfo.seat}
-                </Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500" }}>SEAT</Text>
+                <Text style={{ color: colors.text, fontSize: 14, fontWeight: "600" }}>{memory.seatingInfo.seat}</Text>
               </View>
             )}
           </View>
@@ -167,9 +137,9 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
       {/* Decorative Divider */}
       <View className="flex-row items-center mb-6">
         {Array.from({ length: 20 }).map((_, i) => (
-          <View 
+          <View
             key={i}
-            style={{ 
+            style={{
               width: 8,
               height: 1,
               backgroundColor: colors.border,
@@ -184,9 +154,9 @@ export default function DigitalTicket({ memory }: DigitalTicketProps) {
         <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "500", marginBottom: 12 }}>
           ADMISSION BARCODE
         </Text>
-        
+
         {/* Fake QR Code */}
-        <View 
+        <View
           style={{
             width: 120,
             height: 120,

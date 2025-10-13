@@ -14,12 +14,12 @@ interface ImageViewerModalProps {
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
-export default function ImageViewerModal({ 
-  visible, 
-  onClose, 
-  images, 
+export default function ImageViewerModal({
+  visible,
+  onClose,
+  images,
   initialIndex = 0,
-  title = "Image Viewer"
+  title = "Image Viewer",
 }: ImageViewerModalProps) {
   const { colors } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -31,17 +31,13 @@ export default function ImageViewerModal({
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}
-      statusBarTranslucent
-    >
-      <View style={{ 
-        flex: 1, 
-        backgroundColor: "rgba(0,0,0,0.95)" 
-      }}>
+    <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "rgba(0,0,0,0.95)",
+        }}
+      >
         <SafeAreaView style={{ flex: 1 }}>
           {/* Header */}
           <View className="flex-row items-center justify-between p-4">
@@ -86,16 +82,16 @@ export default function ImageViewerModal({
               contentOffset={{ x: initialIndex * screenWidth, y: 0 }}
             >
               {images.map((imageUri, index) => (
-                <View 
+                <View
                   key={index}
                   style={{ width: screenWidth, height: screenHeight - 120 }}
                   className="justify-center items-center px-4"
                 >
                   <Image
                     source={{ uri: imageUri }}
-                    style={{ 
+                    style={{
                       width: screenWidth - 32,
-                      height: "100%"
+                      height: "100%",
                     }}
                     resizeMode="contain"
                   />

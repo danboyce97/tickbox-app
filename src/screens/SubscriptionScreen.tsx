@@ -1,6 +1,6 @@
 /**
  * Subscription/Paywall Screen
- * 
+ *
  * Shows when user hits free usage limit
  * Allows user to purchase premium subscription
  */
@@ -14,12 +14,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "../contexts/ThemeContext";
 import GradientBackground from "../components/GradientBackground";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import { 
-  getMonthlyPackage, 
-  purchasePackage, 
-  restorePurchases,
-  formatPrice 
-} from "../services/revenueCat";
+import { getMonthlyPackage, purchasePackage, restorePurchases, formatPrice } from "../services/revenueCat";
 import { useSubscriptionStore } from "../state/subscriptionStore";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -28,12 +23,12 @@ const PREMIUM_FEATURES = [
   {
     icon: "infinite",
     title: "Unlimited Memories",
-    description: "Create as many ticket memories as you want"
+    description: "Create as many ticket memories as you want",
   },
   {
     icon: "images",
     title: "Access to New Templates",
-    description: "Exclusive ticket designs and layouts"
+    description: "Exclusive ticket designs and layouts",
   },
 ];
 
@@ -41,7 +36,7 @@ export default function SubscriptionScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { colors } = useTheme();
   const checkAndUpdateStatus = useSubscriptionStore((state) => state.checkAndUpdateStatus);
-  
+
   const [packageInfo, setPackageInfo] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -53,59 +48,59 @@ export default function SubscriptionScreen() {
 
   const loadPackage = async () => {
     try {
-      console.log('\n═══════════════════════════════════════');
-      console.log('🚀 SUBSCRIPTION SCREEN: Loading Package');
-      console.log('═══════════════════════════════════════');
-      
+      console.log("\n═══════════════════════════════════════");
+      console.log("🚀 SUBSCRIPTION SCREEN: Loading Package");
+      console.log("═══════════════════════════════════════");
+
       setIsLoading(true);
       const pkg = await getMonthlyPackage();
-      
+
       if (pkg) {
-        console.log('✅ Package loaded successfully in SubscriptionScreen');
-        console.log('   Package ID:', pkg.identifier);
-        console.log('   Product ID:', pkg.product?.identifier);
-        console.log('   Will use this package for purchase');
+        console.log("✅ Package loaded successfully in SubscriptionScreen");
+        console.log("   Package ID:", pkg.identifier);
+        console.log("   Product ID:", pkg.product?.identifier);
+        console.log("   Will use this package for purchase");
         setPackageInfo(pkg);
       } else {
-        console.warn('⚠️ NO PACKAGE RETURNED from getMonthlyPackage()');
-        console.warn('   RevenueCat may not be configured yet or packages not set up');
-        console.warn('   Using fallback for UI display - purchases disabled until configured');
-        
+        console.warn("⚠️ NO PACKAGE RETURNED from getMonthlyPackage()");
+        console.warn("   RevenueCat may not be configured yet or packages not set up");
+        console.warn("   Using fallback for UI display - purchases disabled until configured");
+
         // Fallback for when RevenueCat isn't available (development/testing)
         setPackageInfo({
-          identifier: '$rc_monthly',
-          packageType: 'MONTHLY',
+          identifier: "$rc_monthly",
+          packageType: "MONTHLY",
           product: {
-            identifier: '1022A',
-            priceString: '£1.99'
-          }
+            identifier: "1022A",
+            priceString: "£1.99",
+          },
         });
       }
     } catch (error) {
       console.warn("⚠️ Error in loadPackage:", error);
       // Set fallback package for testing
       setPackageInfo({
-        identifier: '$rc_monthly',
-        packageType: 'MONTHLY',
+        identifier: "$rc_monthly",
+        packageType: "MONTHLY",
         product: {
-          identifier: '1022A',
-          priceString: '£1.99'
-        }
+          identifier: "1022A",
+          priceString: "£1.99",
+        },
       });
     } finally {
       setIsLoading(false);
-      console.log('═══════════════════════════════════════\n');
+      console.log("═══════════════════════════════════════\n");
     }
   };
 
   const handlePurchase = async () => {
-    console.log('\n═══════════════════════════════════════');
-    console.log('💳 SUBSCRIPTION SCREEN: Starting Purchase');
-    console.log('═══════════════════════════════════════');
-    
+    console.log("\n═══════════════════════════════════════");
+    console.log("💳 SUBSCRIPTION SCREEN: Starting Purchase");
+    console.log("═══════════════════════════════════════");
+
     // Check if package is available
     if (!packageInfo) {
-      console.error('❌ No package info available for purchase');
+      console.error("❌ No package info available for purchase");
       Alert.alert(
         "Subscription Unavailable",
         "We're having trouble loading subscription options. Please make sure you have an internet connection and try again.",
@@ -118,105 +113,98 @@ export default function SubscriptionScreen() {
             text: "Cancel",
             style: "cancel",
           },
-        ]
+        ],
       );
       return;
     }
 
-    console.log('📦 Using Package:');
-    console.log('   Package ID:', packageInfo.identifier);
-    console.log('   Product ID:', packageInfo.product?.identifier);
-    console.log('   Price:', packageInfo.product?.priceString);
+    console.log("📦 Using Package:");
+    console.log("   Package ID:", packageInfo.identifier);
+    console.log("   Product ID:", packageInfo.product?.identifier);
+    console.log("   Price:", packageInfo.product?.priceString);
 
     try {
       setIsPurchasing(true);
-      
-      console.log('🛒 Calling purchasePackage...');
+
+      console.log("🛒 Calling purchasePackage...");
       const result = await purchasePackage(packageInfo);
-      
-      console.log('📊 Purchase Result:', result.success ? '✅ SUCCESS' : '❌ FAILED');
-      
+
+      console.log("📊 Purchase Result:", result.success ? "✅ SUCCESS" : "❌ FAILED");
+
       if (result.success) {
-        console.log('✅ Purchase successful! Updating subscription status...');
+        console.log("✅ Purchase successful! Updating subscription status...");
         // Update local state
         await checkAndUpdateStatus();
-        
-        Alert.alert(
-          "🎉 Welcome to Premium!",
-          "Your subscription is now active. Enjoy unlimited access!",
-          [
-            {
-              text: "Get Started",
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
+
+        Alert.alert("🎉 Welcome to Premium!", "Your subscription is now active. Enjoy unlimited access!", [
+          {
+            text: "Get Started",
+            onPress: () => navigation.goBack(),
+          },
+        ]);
       } else {
         // Only show error if not cancelled by user
         if (result.error !== "Purchase cancelled") {
-          console.log('ℹ️ Purchase failed (not critical):', result.error);
-          
+          console.log("ℹ️ Purchase failed (not critical):", result.error);
+
           // Check if this is a RevenueCat configuration issue
-          if (result.error?.includes('not available') || result.error?.includes('not initialized')) {
+          if (result.error?.includes("not available") || result.error?.includes("not initialized")) {
             Alert.alert(
-              "Setup In Progress", 
-              "RevenueCat subscriptions are being configured. Purchases will be available soon. For now, you can continue using the app."
+              "Setup In Progress",
+              "RevenueCat subscriptions are being configured. Purchases will be available soon. For now, you can continue using the app.",
             );
           } else {
             Alert.alert(
-              "Purchase Failed", 
-              result.error || "Something went wrong. Please try again or contact support."
+              "Purchase Failed",
+              result.error || "Something went wrong. Please try again or contact support.",
             );
           }
         } else {
-          console.log('ℹ️ Purchase cancelled by user');
+          console.log("ℹ️ Purchase cancelled by user");
         }
       }
     } catch (error: any) {
       console.warn("⚠️ Purchase error (continuing):", error);
       Alert.alert(
-        "Setup In Progress", 
-        "Subscriptions are being configured and will be available soon. You can continue using the app in the meantime."
+        "Setup In Progress",
+        "Subscriptions are being configured and will be available soon. You can continue using the app in the meantime.",
       );
     } finally {
       setIsPurchasing(false);
-      console.log('═══════════════════════════════════════\n');
+      console.log("═══════════════════════════════════════\n");
     }
   };
 
   const handleRestore = async () => {
     try {
       setIsRestoring(true);
-      
-      console.log('Attempting to restore purchases...');
+
+      console.log("Attempting to restore purchases...");
       const result = await restorePurchases();
-      
+
       if (result.success) {
         // Update local state
         await checkAndUpdateStatus();
-        
-        Alert.alert(
-          "✅ Purchases Restored",
-          "Your premium subscription has been restored!",
-          [
-            {
-              text: "Continue",
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
+
+        Alert.alert("✅ Purchases Restored", "Your premium subscription has been restored!", [
+          {
+            text: "Continue",
+            onPress: () => navigation.goBack(),
+          },
+        ]);
       } else {
-        console.log('Restore failed:', result.error);
+        console.log("Restore failed:", result.error);
         Alert.alert(
           "No Purchases Found",
-          result.error || "We couldn't find any previous purchases. If you believe this is an error, please contact support."
+          result.error ||
+            "We couldn't find any previous purchases. If you believe this is an error, please contact support.",
         );
       }
     } catch (error: any) {
       console.error("Restore error:", error);
       Alert.alert(
-        "Error", 
-        error.message || "Could not restore purchases. Please check your internet connection and try again."
+        "Error",
+        error.message || "Could not restore purchases. Please check your internet connection and try again.",
       );
     } finally {
       setIsRestoring(false);
@@ -239,21 +227,21 @@ export default function SubscriptionScreen() {
 
         {/* Hero Section */}
         <View className="px-6 py-8 items-center">
-          <View 
-            style={{ backgroundColor: colors.primary + "20" }} 
+          <View
+            style={{ backgroundColor: colors.primary + "20" }}
             className="w-24 h-24 rounded-full items-center justify-center mb-6"
           >
             <Ionicons name="ticket" size={48} color={colors.primary} />
           </View>
-          
+
           <Text style={{ color: colors.text }} className="text-3xl font-bold text-center mb-3">
             Unlock Premium
           </Text>
-          
+
           <Text style={{ color: colors.textSecondary }} className="text-center text-lg mb-2">
             Get unlimited access to all features
           </Text>
-          
+
           {isLoading ? (
             <View className="mt-4">
               <ActivityIndicator color={colors.primary} size="small" />
@@ -278,23 +266,16 @@ export default function SubscriptionScreen() {
           <Text style={{ color: colors.text }} className="text-xl font-semibold mb-4">
             Premium Features
           </Text>
-          
+
           {PREMIUM_FEATURES.map((feature, index) => (
-            <View 
-              key={index}
-              className="flex-row items-start mb-4"
-            >
-              <View 
-                style={{ backgroundColor: colors.primary + "20" }} 
+            <View key={index} className="flex-row items-start mb-4">
+              <View
+                style={{ backgroundColor: colors.primary + "20" }}
                 className="w-12 h-12 rounded-full items-center justify-center mr-4"
               >
-                <Ionicons 
-                  name={feature.icon as any} 
-                  size={24} 
-                  color={colors.primary} 
-                />
+                <Ionicons name={feature.icon as any} size={24} color={colors.primary} />
               </View>
-              
+
               <View className="flex-1">
                 <Text style={{ color: colors.text }} className="text-lg font-semibold mb-1">
                   {feature.title}
@@ -313,26 +294,20 @@ export default function SubscriptionScreen() {
             <Pressable
               onPress={handlePurchase}
               disabled={isLoading || isPurchasing || !packageInfo}
-              style={{ 
-                paddingVertical: 18, 
+              style={{
+                paddingVertical: 18,
                 alignItems: "center",
-                opacity: (isLoading || isPurchasing || !packageInfo) ? 0.6 : 1
+                opacity: isLoading || isPurchasing || !packageInfo ? 0.6 : 1,
               }}
             >
               {isPurchasing ? (
                 <ActivityIndicator color="white" />
               ) : isLoading ? (
-                <Text className="text-white text-center font-bold text-lg">
-                  Loading...
-                </Text>
+                <Text className="text-white text-center font-bold text-lg">Loading...</Text>
               ) : !packageInfo ? (
-                <Text className="text-white text-center font-bold text-lg">
-                  Retry Loading
-                </Text>
+                <Text className="text-white text-center font-bold text-lg">Retry Loading</Text>
               ) : (
-                <Text className="text-white text-center font-bold text-lg">
-                  Start Premium
-                </Text>
+                <Text className="text-white text-center font-bold text-lg">Start Premium</Text>
               )}
             </Pressable>
           </GradientBackground>
@@ -361,7 +336,8 @@ export default function SubscriptionScreen() {
 
           {/* Terms */}
           <Text style={{ color: colors.textMuted }} className="text-xs text-center">
-            Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current period.
+            Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the
+            current period.
           </Text>
         </View>
       </ScrollView>

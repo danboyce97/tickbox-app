@@ -3,6 +3,7 @@
 ## ✅ What's Been Implemented
 
 Google Sign In is now **fully implemented** in the code:
+
 - ✅ Sign In screen integration
 - ✅ Sign Up screen integration
 - ✅ User matching by email and Google ID
@@ -56,12 +57,14 @@ To make Google Sign In work, you need to configure it with Google Cloud Platform
 ### Step 5: Get Client IDs
 
 #### For iOS:
+
 1. Open the downloaded `GoogleService-Info.plist` in a text editor
 2. Find the value for key `CLIENT_ID`
 3. It will look like: `123456789-abc123.apps.googleusercontent.com`
 4. Copy this value
 
 #### For Web Client ID:
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
 2. Select your Firebase project
 3. Go to **APIs & Services** → **Credentials**
@@ -142,29 +145,37 @@ eas build --profile production --platform ios
 ## 🐛 Troubleshooting
 
 ### Error: "DEVELOPER_ERROR"
+
 **Cause**: Client IDs not configured or incorrect
-**Fix**: 
+**Fix**:
+
 - Double-check Client IDs in `.env` file
 - Ensure GoogleService-Info.plist is in project root
 - Rebuild the app after adding Client IDs
 
-### Error: "SIGN_IN_REQUIRED" 
+### Error: "SIGN_IN_REQUIRED"
+
 **Cause**: User needs to sign in to Google on their device
 **Fix**: Make sure user is signed into a Google account in device Settings
 
 ### Error: "PLAY_SERVICES_NOT_AVAILABLE"
+
 **Cause**: Only relevant for Android
 **Fix**: On iOS, this shouldn't happen. If it does, there's a configuration issue.
 
 ### Error: "The client application is not permitted..."
+
 **Cause**: Bundle ID mismatch
-**Fix**: 
+**Fix**:
+
 - Ensure `bundleIdentifier` in app.json matches Firebase iOS app
 - Both should be `com.tickbox.app`
 
 ### Google Sign In button doesn't respond
+
 **Cause**: Missing environment variables or GoogleService-Info.plist
 **Fix**:
+
 - Check console logs for detailed error messages
 - Verify `.env` file has both Client IDs
 - Verify GoogleService-Info.plist exists in project root
@@ -190,6 +201,7 @@ eas build --profile production --platform ios
 ## 🔒 Security & Privacy
 
 ### What Data We Store:
+
 - ✅ Email address (from Google)
 - ✅ Display name (from Google)
 - ✅ Google User ID (for matching returning users)
@@ -197,6 +209,7 @@ eas build --profile production --platform ios
 - ❌ No Google tokens stored (handled by SDK)
 
 ### User Control:
+
 - Users can revoke access in Google Account settings
 - Users can delete their TickBox account
 - Email is only used for account identification
@@ -215,6 +228,7 @@ When Google Sign In works correctly, you'll see:
 ```
 
 Or if user exists:
+
 ```
 🔵 Starting Google Sign In...
 🔵 Google Sign In - User info received:
@@ -227,12 +241,14 @@ Or if user exists:
 ## 🎨 UI Updates Made
 
 ### Sign In Screen:
+
 - ✅ Google button functional (was showing "coming soon")
 - ✅ Error handling with helpful messages
 - ✅ Loading states
 - ✅ User cancellation handled gracefully
 
 ### Sign Up Screen:
+
 - ✅ Google button functional
 - ✅ Checks for existing accounts
 - ✅ Creates new account if needed
@@ -241,6 +257,7 @@ Or if user exists:
 ## ✅ Production Checklist
 
 Before App Store release:
+
 - [ ] Firebase project created
 - [ ] Google Sign-In enabled in Firebase
 - [ ] iOS app added to Firebase
@@ -256,6 +273,7 @@ Before App Store release:
 ## 🚀 Current Status
 
 **Code Implementation**: ✅ Complete
+
 - Sign In flow implemented
 - Sign Up flow implemented
 - Account matching logic
@@ -263,12 +281,14 @@ Before App Store release:
 - Console logging
 
 **Configuration**: ⚠️ Needs Setup
+
 - Firebase project needs to be created
 - Client IDs need to be obtained
 - Environment variables need to be set
 - App needs to be rebuilt
 
 **Testing**: 📱 Ready Once Configured
+
 - Will work on physical devices
 - Will work in TestFlight
 - Will work in production

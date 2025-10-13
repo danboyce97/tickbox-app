@@ -12,8 +12,8 @@
 
 ```typescript
 const PRODUCT_IDS = {
-  ios: '1022A',      // ✅ UPDATED
-  android: '1022A',  // ✅ UPDATED
+  ios: "1022A", // ✅ UPDATED
+  android: "1022A", // ✅ UPDATED
 };
 ```
 
@@ -27,10 +27,11 @@ const PRODUCT_IDS = {
 **Location:** `src/services/revenueCat.ts` (Line 42)
 
 ```typescript
-export const ENTITLEMENT_ID = 'TickBox Premium Monthly'; // ✅ UPDATED
+export const ENTITLEMENT_ID = "TickBox Premium Monthly"; // ✅ UPDATED
 ```
 
 **Used in:**
+
 - ✅ `checkPremiumStatus()` - Line 122
 - ✅ `purchasePackage()` - Line 202
 - ✅ `restorePurchases()` - Line 249
@@ -63,6 +64,7 @@ export const ENTITLEMENT_ID = 'TickBox Premium Monthly'; // ✅ UPDATED
 ## Quick Test Steps
 
 ### Test Purchase:
+
 1. Open app as free user
 2. Try to add 4th ticket
 3. Tap "Upgrade Now"
@@ -72,6 +74,7 @@ export const ENTITLEMENT_ID = 'TickBox Premium Monthly'; // ✅ UPDATED
 7. ✅ Should activate immediately
 
 ### Test Restore:
+
 1. Complete purchase above
 2. Delete and reinstall app
 3. Sign in
@@ -84,6 +87,7 @@ export const ENTITLEMENT_ID = 'TickBox Premium Monthly'; // ✅ UPDATED
 ## RevenueCat Dashboard Settings
 
 **Verify these match:**
+
 - Product ID: `1022A` ✅
 - Entitlement: `TickBox Premium Monthly` ✅
 - App Name: `TickBox (App Store)` ✅

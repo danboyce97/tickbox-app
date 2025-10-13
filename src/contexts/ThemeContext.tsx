@@ -8,7 +8,7 @@ export interface ThemeColors {
   cardBackground: string;
   primary: string;
   primaryStart: string; // For gradient start
-  primaryEnd: string;   // For gradient end
+  primaryEnd: string; // For gradient end
   text: string;
   textSecondary: string;
   textMuted: string;
@@ -25,7 +25,7 @@ const lightTheme: ThemeColors = {
   cardBackground: "#FFFFFF",
   primary: "#dc808b",
   primaryStart: "#dc808b", // TickBox gradient start
-  primaryEnd: "#c96d7a",   // TickBox gradient end
+  primaryEnd: "#c96d7a", // TickBox gradient end
   text: "#1F2937",
   textSecondary: "#6B7280",
   textMuted: "#9CA3AF",
@@ -77,11 +77,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const colors = theme === "dark" ? darkTheme : lightTheme;
   const isDark = theme === "dark";
 
-  return (
-    <ThemeContext.Provider value={{ theme, colors, isDark }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, colors, isDark }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeContextType {

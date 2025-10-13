@@ -24,6 +24,7 @@
       "ios": {
         "simulator": false,
         "buildConfiguration": "Release"
+
       },
       "android": {
         "buildType": "apk"

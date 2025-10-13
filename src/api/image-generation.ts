@@ -23,7 +23,7 @@ export async function generateImage(
     quality?: "low" | "medium" | "high" | "auto";
     format?: "png" | "jpeg" | "webp";
     background?: undefined | "transparent";
-  }
+  },
 ): Promise<string> {
   try {
     // Create request body

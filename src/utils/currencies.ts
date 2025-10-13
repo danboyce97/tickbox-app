@@ -1,6 +1,6 @@
 /**
  * Currency Utilities
- * 
+ *
  * Provides currency symbols, names, and conversion helpers
  */
 
@@ -21,7 +21,7 @@ export const CURRENCIES: CurrencyInfo[] = [
   { code: "CAD", symbol: "C$", name: "Canadian Dollar", popular: true },
   { code: "AUD", symbol: "A$", name: "Australian Dollar", popular: true },
   { code: "CHF", symbol: "Fr", name: "Swiss Franc", popular: true },
-  
+
   // All other currencies (alphabetical)
   { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
   { code: "AFN", symbol: "؋", name: "Afghan Afghani" },
@@ -181,21 +181,21 @@ export const CURRENCIES: CurrencyInfo[] = [
  * Get popular currencies (for display at top of list)
  */
 export const getPopularCurrencies = (): CurrencyInfo[] => {
-  return CURRENCIES.filter(c => c.popular);
+  return CURRENCIES.filter((c) => c.popular);
 };
 
 /**
  * Get all non-popular currencies (for display after popular ones)
  */
 export const getOtherCurrencies = (): CurrencyInfo[] => {
-  return CURRENCIES.filter(c => !c.popular);
+  return CURRENCIES.filter((c) => !c.popular);
 };
 
 /**
  * Get currency symbol by code
  */
 export const getCurrencySymbol = (code: string): string => {
-  const currency = CURRENCIES.find(c => c.code === code);
+  const currency = CURRENCIES.find((c) => c.code === code);
   return currency?.symbol || code;
 };
 
@@ -203,7 +203,7 @@ export const getCurrencySymbol = (code: string): string => {
  * Get currency name by code
  */
 export const getCurrencyName = (code: string): string => {
-  const currency = CURRENCIES.find(c => c.code === code);
+  const currency = CURRENCIES.find((c) => c.code === code);
   return currency?.name || code;
 };
 

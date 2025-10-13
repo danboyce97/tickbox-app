@@ -26,13 +26,13 @@ const DEFAULT_CATEGORIES = [
 
 export default function CategorySelector({ selectedCategory, onCategorySelect }: CategorySelectorProps) {
   const { colors } = useTheme();
-  const user = useUserStore(state => state.user);
-  const updateUser = useUserStore(state => state.updateUser);
-  const deleteCustomCategory = useUserStore(state => state.deleteCustomCategory);
-  const renameCategory = useUserStore(state => state.renameCategory);
-  const renameCategoryInMemories = useMemoryStore(state => state.renameCategoryInMemories);
-  const deleteCategoryFromMemories = useMemoryStore(state => state.deleteCategoryFromMemories);
-  
+  const user = useUserStore((state) => state.user);
+  const updateUser = useUserStore((state) => state.updateUser);
+  const deleteCustomCategory = useUserStore((state) => state.deleteCustomCategory);
+  const renameCategory = useUserStore((state) => state.renameCategory);
+  const renameCategoryInMemories = useMemoryStore((state) => state.renameCategoryInMemories);
+  const deleteCategoryFromMemories = useMemoryStore((state) => state.deleteCategoryFromMemories);
+
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -56,17 +56,17 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
     }
 
     const newCustomCategory = customCategory.trim();
-    
+
     // Check if category already exists
-    const allCategories = [...DEFAULT_CATEGORIES.map(c => c.id), ...customCategories];
-    if (allCategories.some(cat => cat.toLowerCase() === newCustomCategory.toLowerCase())) {
+    const allCategories = [...DEFAULT_CATEGORIES.map((c) => c.id), ...customCategories];
+    if (allCategories.some((cat) => cat.toLowerCase() === newCustomCategory.toLowerCase())) {
       Alert.alert("Duplicate Category", "This category already exists.");
       return;
     }
 
     const updatedCustomCategories = [...customCategories, newCustomCategory];
     updateUser({ customCategories: updatedCustomCategories });
-    
+
     setCustomCategory("");
     setShowCustomInput(false);
     onCategorySelect(newCustomCategory);
@@ -91,17 +91,17 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
           onPress: () => {
             deleteCustomCategory(selectedForEdit.name);
             deleteCategoryFromMemories(selectedForEdit.name, user.id, "Other");
-            
+
             // If currently selected, switch to Other
             if (selectedCategory === selectedForEdit.name) {
               onCategorySelect("Other");
             }
-            
+
             setShowOptionsModal(false);
             setSelectedForEdit(null);
           },
         },
-      ]
+      ],
     );
   };
 
@@ -127,12 +127,11 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
     }
 
     // Check for duplicates (excluding the current category being renamed)
-    const allCategories = [
-      ...DEFAULT_CATEGORIES.map(c => c.id),
-      ...customCategories
-    ].filter(cat => cat !== selectedForEdit.name);
+    const allCategories = [...DEFAULT_CATEGORIES.map((c) => c.id), ...customCategories].filter(
+      (cat) => cat !== selectedForEdit.name,
+    );
 
-    if (allCategories.some(cat => cat.toLowerCase() === trimmedName.toLowerCase())) {
+    if (allCategories.some((cat) => cat.toLowerCase() === trimmedName.toLowerCase())) {
       Alert.alert("Duplicate Category", "This category name already exists.");
       return;
     }
@@ -158,7 +157,7 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
 
   const renderCategoryItem = (category: { id: string; label: string; icon: string }, isCustom = false) => {
     const isSelected = selectedCategory === category.id;
-    
+
     return (
       <Pressable
         key={category.id}
@@ -193,12 +192,7 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
           {category.label}
         </Text>
         {isCustom && !isSelected && (
-          <Ionicons
-            name="star"
-            size={12}
-            color={colors.warning}
-            style={{ position: "absolute", top: 8, right: 8 }}
-          />
+          <Ionicons name="star" size={12} color={colors.warning} style={{ position: "absolute", top: 8, right: 8 }} />
         )}
       </Pressable>
     );
@@ -209,11 +203,11 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
       <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
         Event Category
       </Text>
-      
+
       <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
         {/* Default Categories */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 16 }}>
-          {DEFAULT_CATEGORIES.map(category => renderCategoryItem(category))}
+          {DEFAULT_CATEGORIES.map((category) => renderCategoryItem(category))}
         </View>
 
         {/* Custom Categories */}
@@ -223,8 +217,8 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
               Your Custom Categories
             </Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 16 }}>
-              {customCategories.map((category: string) => 
-                renderCategoryItem({ id: category, label: category, icon: "star" }, true)
+              {customCategories.map((category: string) =>
+                renderCategoryItem({ id: category, label: category, icon: "star" }, true),
               )}
             </View>
           </>
@@ -286,28 +280,30 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
               {customCategory.length}/20 characters
             </Text>
           </View>
-        ) : canAddMore && (
-          <Pressable
-            onPress={() => setShowCustomInput(true)}
-            style={{
-              backgroundColor: colors.surface,
-              borderWidth: 2,
-              borderColor: colors.border,
-              borderStyle: "dashed",
-              borderRadius: 12,
-              padding: 16,
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <Ionicons name="add-circle-outline" size={24} color={colors.primary} style={{ marginBottom: 4 }} />
-            <Text style={{ color: colors.primary }} className="font-medium">
-              Add Custom Category
-            </Text>
-            <Text style={{ color: colors.textMuted }} className="text-xs mt-1">
-              {customCategories.length}/{maxCustomCategories} custom categories
-            </Text>
-          </Pressable>
+        ) : (
+          canAddMore && (
+            <Pressable
+              onPress={() => setShowCustomInput(true)}
+              style={{
+                backgroundColor: colors.surface,
+                borderWidth: 2,
+                borderColor: colors.border,
+                borderStyle: "dashed",
+                borderRadius: 12,
+                padding: 16,
+                alignItems: "center",
+                marginTop: 8,
+              }}
+            >
+              <Ionicons name="add-circle-outline" size={24} color={colors.primary} style={{ marginBottom: 4 }} />
+              <Text style={{ color: colors.primary }} className="font-medium">
+                Add Custom Category
+              </Text>
+              <Text style={{ color: colors.textMuted }} className="text-xs mt-1">
+                {customCategories.length}/{maxCustomCategories} custom categories
+              </Text>
+            </Pressable>
+          )
         )}
       </ScrollView>
 
@@ -324,17 +320,27 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
         }}
       >
         <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 50 }}>
-            <View className="flex-row justify-between items-center p-6 border-b" style={{ borderBottomColor: colors.border }}>
-              <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
-                Manage Category
-              </Text>
-              <Pressable onPress={() => {
-                setShowOptionsModal(false);
-                setShowRenameInput(false);
-                setSelectedForEdit(null);
-                setRenameValue("");
-              }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              paddingBottom: 50,
+            }}
+          >
+            <View
+              className="flex-row justify-between items-center p-6 border-b"
+              style={{ borderBottomColor: colors.border }}
+            >
+              <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>Manage Category</Text>
+              <Pressable
+                onPress={() => {
+                  setShowOptionsModal(false);
+                  setShowRenameInput(false);
+                  setSelectedForEdit(null);
+                  setRenameValue("");
+                }}
+              >
                 <Ionicons name="close" size={24} color={colors.textSecondary} />
               </Pressable>
             </View>
@@ -346,18 +352,14 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
                     Category: <Text style={{ color: colors.text, fontWeight: "600" }}>{selectedForEdit.name}</Text>
                   </Text>
                   {selectedForEdit.isCustom && (
-                    <Text style={{ color: colors.warning, fontSize: 12 }}>
-                      Custom Category
-                    </Text>
+                    <Text style={{ color: colors.warning, fontSize: 12 }}>Custom Category</Text>
                   )}
                 </View>
               )}
 
               {showRenameInput ? (
                 <View className="mb-4">
-                  <Text style={{ color: colors.text, fontSize: 14, fontWeight: "500", marginBottom: 8 }}>
-                    New Name
-                  </Text>
+                  <Text style={{ color: colors.text, fontSize: 14, fontWeight: "500", marginBottom: 8 }}>New Name</Text>
                   <View className="flex-row items-center">
                     <TextInput
                       value={renameValue}
@@ -409,9 +411,7 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
                     }}
                   >
                     <Ionicons name="create-outline" size={20} color={colors.primary} />
-                    <Text style={{ color: colors.text, fontSize: 16, marginLeft: 12 }}>
-                      Rename Category
-                    </Text>
+                    <Text style={{ color: colors.text, fontSize: 16, marginLeft: 12 }}>Rename Category</Text>
                   </Pressable>
 
                   {selectedForEdit?.isCustom && (
@@ -429,9 +429,7 @@ export default function CategorySelector({ selectedCategory, onCategorySelect }:
                       }}
                     >
                       <Ionicons name="trash-outline" size={20} color={colors.error} />
-                      <Text style={{ color: colors.error, fontSize: 16, marginLeft: 12 }}>
-                        Delete Category
-                      </Text>
+                      <Text style={{ color: colors.error, fontSize: 16, marginLeft: 12 }}>Delete Category</Text>
                     </Pressable>
                   )}
                 </View>

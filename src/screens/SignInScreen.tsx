@@ -39,7 +39,7 @@ export default function SignInScreen() {
         setIsAppleAuthAvailable(false);
       }
     };
-    
+
     if (Platform.OS === "ios") {
       checkAppleAuth();
     }
@@ -66,29 +66,23 @@ export default function SignInScreen() {
     setIsLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       // Check if user exists
       const existingUser = findUserByEmail(email);
-      
+
       if (!existingUser) {
         setIsLoading(false);
-        showError(
-          "No account found with this email address. Would you like to create a new account?",
-          "signup"
-        );
+        showError("No account found with this email address. Would you like to create a new account?", "signup");
         return;
       }
 
       // Authenticate user
       const authenticatedUser = authenticateUser(email, password);
-      
+
       if (!authenticatedUser) {
         setIsLoading(false);
-        showError(
-          "Incorrect password. Please try again or reset your password.",
-          "password"
-        );
+        showError("Incorrect password. Please try again or reset your password.", "password");
         return;
       }
 
@@ -106,12 +100,14 @@ export default function SignInScreen() {
       // Check if Apple Authentication is available
       const isAvailable = await AppleAuthentication.isAvailableAsync();
       if (!isAvailable) {
-        showError("Apple Sign In is not available on this device. Please use email sign in or contact support if you believe this is an error.");
+        showError(
+          "Apple Sign In is not available on this device. Please use email sign in or contact support if you believe this is an error.",
+        );
         return;
       }
 
-      console.log('🍎 Starting Apple Sign In...');
-      
+      console.log("🍎 Starting Apple Sign In...");
+
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -119,64 +115,65 @@ export default function SignInScreen() {
         ],
       });
 
-      console.log('🍎 Apple Sign In - Credential received:', {
+      console.log("🍎 Apple Sign In - Credential received:", {
         user: credential.user,
         email: credential.email,
         fullName: credential.fullName,
-        identityToken: credential.identityToken ? 'Present' : 'Missing'
+        identityToken: credential.identityToken ? "Present" : "Missing",
       });
 
       // Apple uses a stable user identifier - try to find user by Apple ID first
       const appleEmail = credential.email || `apple_${credential.user}@tickbox.app`;
-      
+
       // Check for existing user by email OR by matching Apple user ID in username
       let existingUser = findUserByEmail(appleEmail);
-      
+
       if (!existingUser) {
         // Try to find by Apple user ID (stored in username for Apple users)
         const registeredUsers = useUserStore.getState().registeredUsers;
-        existingUser = registeredUsers.find(u => 
-          u.username === credential.user.substring(0, 15) || 
-          u.email.includes(`apple_${credential.user}`)
+        existingUser = registeredUsers.find(
+          (u) => u.username === credential.user.substring(0, 15) || u.email.includes(`apple_${credential.user}`),
         );
       }
 
       if (existingUser) {
         // Sign in existing user
-        console.log('✅ Found existing Apple user, signing in');
+        console.log("✅ Found existing Apple user, signing in");
         setUser(existingUser);
       } else {
         // Create new user from Apple credentials
-        console.log('👤 Creating new Apple user');
+        console.log("👤 Creating new Apple user");
         const mockUser = createMockUser();
         mockUser.email = appleEmail;
-        mockUser.displayName = credential.fullName?.givenName 
+        mockUser.displayName = credential.fullName?.givenName
           ? `${credential.fullName.givenName} ${credential.fullName.familyName || ""}`.trim()
           : "Apple User";
         mockUser.username = credential.user.substring(0, 15);
         mockUser.introSeen = false;
-        
+
         useUserStore.getState().registerUser(mockUser);
         setUser(mockUser);
-        console.log('✅ New Apple user created and registered');
+        console.log("✅ New Apple user created and registered");
       }
     } catch (error: any) {
-      console.error('❌ Apple Sign In error:', error);
-      console.error('   Error code:', error.code);
-      console.error('   Error message:', error.message);
-      
+      console.error("❌ Apple Sign In error:", error);
+      console.error("   Error code:", error.code);
+      console.error("   Error message:", error.message);
+
       // Handle user cancellation
       if (error.code === "ERR_REQUEST_CANCELED" || error.code === "ERR_CANCELED") {
-        console.log('ℹ️ Apple Sign In cancelled by user');
+        console.log("ℹ️ Apple Sign In cancelled by user");
         return;
       }
-      
+
       // Handle specific error cases
       if (error.code === "ERR_INVALID_OPERATION") {
-        showError("Apple Sign In is not properly configured for this app. Please use email sign in or contact support.");
+        showError(
+          "Apple Sign In is not properly configured for this app. Please use email sign in or contact support.",
+        );
         return;
       }
-      
+
       if (error.code === "ERR_NOT_AVAILABLE") {
         showError("Apple Sign In is not available on this device. Please use email sign in instead.");
         return;
@@ -204,13 +201,13 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={0}
       >
-        <ScrollView 
-          className="flex-1" 
+        <ScrollView
+          className="flex-1"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1 }}
@@ -218,8 +215,8 @@ export default function SignInScreen() {
           <View className="px-6 py-8">
             {/* Header */}
             <View className="items-center mb-8 mt-8">
-              <View 
-                style={{ backgroundColor: colors.primary + "20" }} 
+              <View
+                style={{ backgroundColor: colors.primary + "20" }}
                 className="w-20 h-20 rounded-full items-center justify-center mb-4"
               >
                 <Ionicons name="ticket" size={40} color={colors.primary} />
@@ -259,18 +256,14 @@ export default function SignInScreen() {
                 }}
               >
                 <Ionicons name="logo-google" size={20} color="#DB4437" />
-                <Text style={{ color: colors.text, marginLeft: 12, fontWeight: "600" }}>
-                  Continue with Google
-                </Text>
+                <Text style={{ color: colors.text, marginLeft: 12, fontWeight: "600" }}>Continue with Google</Text>
               </Pressable>
             </View>
 
             {/* Divider */}
             <View className="flex-row items-center mb-6">
               <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
-              <Text style={{ color: colors.textMuted, marginHorizontal: 16 }}>
-                or
-              </Text>
+              <Text style={{ color: colors.textMuted, marginHorizontal: 16 }}>or</Text>
               <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
             </View>
 
@@ -339,20 +332,13 @@ export default function SignInScreen() {
                       padding: 4,
                     }}
                   >
-                    <Ionicons
-                      name={showPassword ? "eye-off" : "eye"}
-                      size={20}
-                      color={colors.textMuted}
-                    />
+                    <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color={colors.textMuted} />
                   </Pressable>
                 </View>
               </View>
 
               {/* Forgot Password */}
-              <Pressable 
-                onPress={() => navigation.navigate("ForgotPassword" as never)}
-                className="mb-4"
-              >
+              <Pressable onPress={() => navigation.navigate("ForgotPassword" as never)} className="mb-4">
                 <Text style={{ color: colors.primary }} className="text-right font-medium">
                   Forgot Password?
                 </Text>
@@ -365,18 +351,14 @@ export default function SignInScreen() {
                   disabled={isLoading}
                   style={{ paddingVertical: 16, alignItems: "center" }}
                 >
-                  <Text className="text-white font-bold text-lg">
-                    {isLoading ? "Signing In..." : "Sign In"}
-                  </Text>
+                  <Text className="text-white font-bold text-lg">{isLoading ? "Signing In..." : "Sign In"}</Text>
                 </Pressable>
               </GradientBackground>
             </TickBoxCard>
 
             {/* Sign Up Link */}
             <View className="flex-row items-center justify-center mt-6">
-              <Text style={{ color: colors.textSecondary }}>
-                {"Don't have an account? "}
-              </Text>
+              <Text style={{ color: colors.textSecondary }}>{"Don't have an account? "}</Text>
               <Pressable onPress={() => navigation.navigate("SignUp" as never)}>
                 <Text style={{ color: colors.primary }} className="font-semibold">
                   Sign Up
@@ -395,16 +377,45 @@ export default function SignInScreen() {
         onRequestClose={() => setShowErrorModal(false)}
       >
         <View className="flex-1 justify-center items-center" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderRadius: 16, padding: 24, marginHorizontal: 32, width: "85%" }}>
-            <View style={{ backgroundColor: colors.error + "20", width: 64, height: 64, borderRadius: 32, justifyContent: "center", alignItems: "center", alignSelf: "center", marginBottom: 16 }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 16,
+              padding: 24,
+              marginHorizontal: 32,
+              width: "85%",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.error + "20",
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                marginBottom: 16,
+              }}
+            >
               <Ionicons name="alert-circle" size={32} color={colors.error} />
             </View>
 
-            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}>
+            <Text
+              style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}
+            >
               {errorAction ? "Account Issue" : "Error"}
             </Text>
-            
-            <Text style={{ color: colors.textSecondary, fontSize: 16, textAlign: "center", marginBottom: 24, lineHeight: 22 }}>
+
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontSize: 16,
+                textAlign: "center",
+                marginBottom: 24,
+                lineHeight: 22,
+              }}
+            >
               {errorMessage}
             </Text>
 

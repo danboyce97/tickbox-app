@@ -24,13 +24,13 @@ export default function StatsGrid({ stats, columns = 3 }: StatsGridProps) {
       <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
         Your Stats
       </Text>
-      
+
       <View className="flex-row flex-wrap -mx-2">
         {stats.map((stat, index) => (
           <View key={index} style={{ width: `${100 / columns}%` }} className="px-2 mb-4">
             <View className="items-center">
-              <View 
-                style={{ 
+              <View
+                style={{
                   backgroundColor: `${stat.color || colors.primary}20`,
                   width: 48,
                   height: 48,
@@ -40,23 +40,12 @@ export default function StatsGrid({ stats, columns = 3 }: StatsGridProps) {
                   marginBottom: 8,
                 }}
               >
-                <Ionicons 
-                  name={stat.icon} 
-                  size={24} 
-                  color={stat.color || colors.primary} 
-                />
+                <Ionicons name={stat.icon} size={24} color={stat.color || colors.primary} />
               </View>
-              <Text 
-                style={{ color: stat.color || colors.primary }} 
-                className="text-2xl font-bold"
-              >
+              <Text style={{ color: stat.color || colors.primary }} className="text-2xl font-bold">
                 {stat.value}
               </Text>
-              <Text 
-                style={{ color: colors.textSecondary }} 
-                className="text-sm text-center"
-                numberOfLines={2}
-              >
+              <Text style={{ color: colors.textSecondary }} className="text-sm text-center" numberOfLines={2}>
                 {stat.label}
               </Text>
             </View>

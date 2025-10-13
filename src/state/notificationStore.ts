@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export type NotificationType = 
+export type NotificationType =
   | "friend_request_received"
   | "friend_request_accepted"
   | "new_memory"
@@ -41,7 +41,7 @@ export const useNotificationStore = create<NotificationState>()(
           id: `notif-${Date.now()}`,
           createdAt: new Date().toISOString(),
         };
-        
+
         set((state) => ({
           notifications: [newNotification, ...state.notifications],
         }));
@@ -49,49 +49,38 @@ export const useNotificationStore = create<NotificationState>()(
       markAsRead: (notificationId) => {
         set((state) => ({
           notifications: state.notifications.map((notification) =>
-            notification.id === notificationId
-              ? { ...notification, read: true }
-              : notification
+            notification.id === notificationId ? { ...notification, read: true } : notification,
           ),
         }));
       },
       markAllAsRead: (userId) => {
         set((state) => ({
           notifications: state.notifications.map((notification) =>
-            notification.userId === userId
-              ? { ...notification, read: true }
-              : notification
+            notification.userId === userId ? { ...notification, read: true } : notification,
           ),
         }));
       },
       getUnreadCount: (userId) => {
-        return get().notifications.filter(
-          (notification) => notification.userId === userId && !notification.read
-        ).length;
+        return get().notifications.filter((notification) => notification.userId === userId && !notification.read)
+          .length;
       },
       getNotificationsByUser: (userId) => {
-        return get().notifications.filter(
-          (notification) => notification.userId === userId
-        );
+        return get().notifications.filter((notification) => notification.userId === userId);
       },
       deleteNotification: (notificationId) => {
         set((state) => ({
-          notifications: state.notifications.filter(
-            (notification) => notification.id !== notificationId
-          ),
+          notifications: state.notifications.filter((notification) => notification.id !== notificationId),
         }));
       },
       clearAllNotifications: (userId) => {
         set((state) => ({
-          notifications: state.notifications.filter(
-            (notification) => notification.userId !== userId
-          ),
+          notifications: state.notifications.filter((notification) => notification.userId !== userId),
         }));
       },
     }),
     {
       name: "notification-storage",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

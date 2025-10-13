@@ -3,13 +3,14 @@
     "name": "TickBox",
     "slug": "tickbox",
     "scheme": "tickbox",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "usesAppleSignIn": true,
+      "bundleIdentifier": "com.tickbox.app",
       "infoPlist": {
         "NSUserTrackingUsageDescription": "We use tracking to provide you with personalized offers and improve your experience."
       }
@@ -17,12 +18,17 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.tickbox.app",
-      "permissions": [
-        "com.android.vending.BILLING"
-      ]
+      "permissions": ["com.android.vending.BILLING"]
     },
     "plugins": [
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      [
+        {
+          "android": {
+            "useAmazon": false
+          } 
+        }
+      ]
     ]
   }
 }

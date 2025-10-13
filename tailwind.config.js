@@ -41,19 +41,19 @@ module.exports = {
       // space-{n}  ->  gap: {n}
       matchUtilities(
         { space: (value) => ({ gap: value }) },
-        { values: spacing, type: ["length", "number", "percentage"] }
+        { values: spacing, type: ["length", "number", "percentage"] },
       );
 
       // space-x-{n}  ->  column-gap: {n}
       matchUtilities(
         { "space-x": (value) => ({ columnGap: value }) },
-        { values: spacing, type: ["length", "number", "percentage"] }
+        { values: spacing, type: ["length", "number", "percentage"] },
       );
 
       // space-y-{n}  ->  row-gap: {n}
       matchUtilities(
         { "space-y": (value) => ({ rowGap: value }) },
-        { values: spacing, type: ["length", "number", "percentage"] }
+        { values: spacing, type: ["length", "number", "percentage"] },
       );
     }),
   ],

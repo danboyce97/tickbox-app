@@ -97,10 +97,7 @@ function MainTabNavigator() {
         headerRight: () => {
           const navigation = useNavigation();
           return (
-            <Pressable
-              onPress={() => navigation.navigate("Notifications" as never)}
-              style={{ marginRight: 16 }}
-            >
+            <Pressable onPress={() => navigation.navigate("Notifications" as never)} style={{ marginRight: 16 }}>
               <View>
                 <Ionicons
                   name={unreadCount > 0 ? "notifications" : "notifications-outline"}
@@ -109,9 +106,7 @@ function MainTabNavigator() {
                 />
                 {unreadCount > 0 && (
                   <View className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full items-center justify-center">
-                    <Text className="text-white text-xs font-bold">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </Text>
+                    <Text className="text-white text-xs font-bold">{unreadCount > 9 ? "9+" : unreadCount}</Text>
                   </View>
                 )}
               </View>
@@ -120,11 +115,7 @@ function MainTabNavigator() {
         },
       })}
     >
-      <Tab.Screen 
-        name="Dashboard" 
-        component={DashboardScreen}
-        options={{ title: "TickBox" }}
-      />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} options={{ title: "TickBox" }} />
       <Tab.Screen name="Friends" component={FriendsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
@@ -139,8 +130,8 @@ export default function AppNavigator() {
   // Show auth screens if not authenticated
   if (!isAuthenticated || !user) {
     return (
-      <Stack.Navigator 
-        screenOptions={{ 
+      <Stack.Navigator
+        screenOptions={{
           headerShown: false,
           headerStyle: { backgroundColor: colors.surface },
           headerTitleStyle: { color: colors.text },
@@ -157,8 +148,8 @@ export default function AppNavigator() {
   // Show onboarding if user hasn't seen it yet
   if (!user.introSeen) {
     return (
-      <Stack.Navigator 
-        screenOptions={{ 
+      <Stack.Navigator
+        screenOptions={{
           headerShown: false,
           headerStyle: { backgroundColor: colors.surface },
           headerTitleStyle: { color: colors.text },
@@ -180,8 +171,8 @@ export default function AppNavigator() {
           headerTintColor: colors.primary,
         }}
       >
-        <Stack.Screen 
-          name="ProfileSetup" 
+        <Stack.Screen
+          name="ProfileSetup"
           component={ProfileSetupScreen}
           options={{ title: "Complete Your Profile", headerBackVisible: false }}
         />
@@ -198,11 +189,7 @@ export default function AppNavigator() {
         headerBackTitle: "Back",
       }}
     >
-      <Stack.Screen 
-        name="MainTabs" 
-        component={MainTabNavigator} 
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="MainTabs" component={MainTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen
         name="CreateMemory"
         component={CreateMemoryScreen}
@@ -214,40 +201,24 @@ export default function AppNavigator() {
       <Stack.Screen
         name="MemoryDetail"
         component={MemoryDetailScreen}
-        options={{ 
-          title: "Memory" // Dynamic header will be set by the component
+        options={{
+          title: "Memory", // Dynamic header will be set by the component
         }}
       />
-      <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-        options={{ title: "Notifications" }}
-      />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: "Notifications" }} />
       <Stack.Screen
         name="SettingsPrivacy"
         component={SettingsPrivacyScreen}
         options={{ title: "Settings & Privacy" }}
       />
-      <Stack.Screen
-        name="MyDetails"
-        component={MyDetailsScreen}
-        options={{ title: "My Details" }}
-      />
+      <Stack.Screen name="MyDetails" component={MyDetailsScreen} options={{ title: "My Details" }} />
       <Stack.Screen
         name="SupportFeedback"
         component={SupportFeedbackScreen}
         options={{ title: "Support & Feedback" }}
       />
-      <Stack.Screen
-        name="InviteFriends"
-        component={InviteFriendsScreen}
-        options={{ title: "Invite Friends" }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{ title: "Edit Profile" }}
-      />
+      <Stack.Screen name="InviteFriends" component={InviteFriendsScreen} options={{ title: "Invite Friends" }} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: "Edit Profile" }} />
       <Stack.Screen
         name="UserProfile"
         component={UserProfileScreen}

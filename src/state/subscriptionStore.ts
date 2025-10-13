@@ -1,24 +1,20 @@
 /**
  * Subscription Store
- * 
+ *
  * Manages subscription state using Zustand with AsyncStorage persistence
  */
 
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  checkPremiumStatus, 
-  getCustomerInfo,
-  ENTITLEMENT_ID 
-} from '../services/revenueCat';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { checkPremiumStatus, getCustomerInfo, ENTITLEMENT_ID } from "../services/revenueCat";
 
 export interface SubscriptionState {
   isPremium: boolean;
   isLoading: boolean;
   customerInfo: any | null;
   lastChecked: string | null;
-  
+
   // Actions
   setPremiumStatus: (isPremium: boolean) => void;
   setCustomerInfo: (customerInfo: any | null) => void;
@@ -42,10 +38,10 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       setCustomerInfo: (customerInfo) => {
         if (customerInfo) {
           const isPremium = customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined;
-          set({ 
-            customerInfo, 
-            isPremium, 
-            lastChecked: new Date().toISOString() 
+          set({
+            customerInfo,
+            isPremium,
+            lastChecked: new Date().toISOString(),
           });
         } else {
           set({ customerInfo: null, isPremium: false });
@@ -59,22 +55,19 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       checkAndUpdateStatus: async () => {
         try {
           set({ isLoading: true });
-          
-          const [isPremium, customerInfo] = await Promise.all([
-            checkPremiumStatus(),
-            getCustomerInfo(),
-          ]);
 
-          set({ 
-            isPremium, 
+          const [isPremium, customerInfo] = await Promise.all([checkPremiumStatus(), getCustomerInfo()]);
+
+          set({
+            isPremium,
             customerInfo,
             lastChecked: new Date().toISOString(),
-            isLoading: false 
+            isLoading: false,
           });
 
           return;
         } catch (error) {
-          console.error('Error checking subscription status:', error);
+          console.error("Error checking subscription status:", error);
           set({ isLoading: false });
         }
       },
@@ -89,15 +82,15 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       },
     }),
     {
-      name: 'subscription-storage',
+      name: "subscription-storage",
       storage: createJSONStorage(() => AsyncStorage),
       // Only persist these fields
       partialize: (state) => ({
         isPremium: state.isPremium,
         lastChecked: state.lastChecked,
       }),
-    }
-  )
+    },
+  ),
 );
 
 /**

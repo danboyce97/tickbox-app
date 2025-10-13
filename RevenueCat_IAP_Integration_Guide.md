@@ -1,4 +1,5 @@
 # RevenueCat In-App Purchases Integration Guide
+
 ## TickBox App - Premium Features Implementation
 
 This guide provides comprehensive instructions for integrating RevenueCat in-app purchases into the TickBox app, implementing a freemium model with premium ticket creation.
@@ -8,12 +9,14 @@ This guide provides comprehensive instructions for integrating RevenueCat in-app
 ## 🎯 Business Model Overview
 
 **Free Tier:**
+
 - Create up to 3 memory tickets
 - Basic app functionality
 - Friend connections
 - View memories
 
 **Premium Tier ($4.99/month):**
+
 - Unlimited memory ticket creation
 - Premium templates and customization
 - Priority support
@@ -24,6 +27,7 @@ This guide provides comprehensive instructions for integrating RevenueCat in-app
 ## 📦 1. Package Installation
 
 ### Install RevenueCat SDK
+
 ```bash
 # Install the React Native Purchases SDK
 bun add react-native-purchases
@@ -33,6 +37,7 @@ cd ios && pod install && cd ..
 ```
 
 ### Update app.json (Expo)
+
 ```json
 {
   "expo": {
@@ -55,11 +60,13 @@ cd ios && pod install && cd ..
 ## ⚙️ 2. RevenueCat Dashboard Setup
 
 ### Create RevenueCat Account
+
 1. Visit [app.revenuecat.com](https://app.revenuecat.com)
 2. Create account and new project: "TickBox"
 3. Note your **API Key** (found in Project Settings)
 
 ### Configure Products
+
 1. **Navigate to**: Products → + New Product
 2. **Create Product**:
    - **Identifier**: `tickbox_premium_monthly`
@@ -68,12 +75,14 @@ cd ios && pod install && cd ..
    - **Price**: $4.99
 
 ### Configure Entitlements
+
 1. **Navigate to**: Entitlements → + New Entitlement
 2. **Create Entitlement**:
    - **Identifier**: `premium`
    - **Attach Products**: `tickbox_premium_monthly`
 
 ### App Store Connect Setup (iOS)
+
 1. Create In-App Purchase in App Store Connect
    - **Product ID**: `tickbox_premium_monthly`
    - **Type**: Auto-Renewable Subscription
@@ -82,8 +91,9 @@ cd ios && pod install && cd ..
 3. Add to RevenueCat Products section
 
 ### Google Play Console Setup (Android)
+
 1. Create subscription in Google Play Console
-   - **Product ID**: `tickbox_premium_monthly`  
+   - **Product ID**: `tickbox_premium_monthly`
    - **Price**: $4.99/month
 2. Link to RevenueCat Products section
 
@@ -92,6 +102,7 @@ cd ios && pod install && cd ..
 ## 🔧 3. Implementation
 
 ### Create Purchases Service
+
 ```typescript
 // src/api/purchases-service.ts
 import Purchases, { CustomerInfo, PurchasesOffering } from 'react-native-purchases';
@@ -107,7 +118,7 @@ export class PurchasesService {
       } else {
         await Purchases.configure({ apiKey: REVENUE_CAT_API_KEY });
       }
-      
+
       // Identify user
       await Purchases.logIn(userId);
       console.log('RevenueCat initialized successfully');
@@ -147,13 +158,14 @@ export class PurchasesService {
     }
   }
 
-  static async logOut() {
+  static async logOut({
     await Purchases.logOut();
   }
 }
 ```
 
 ### Update User Store with Premium State
+
 ```typescript
 // Add to src/state/userStore.ts
 interface UserState {
@@ -182,6 +194,7 @@ canCreateTicket: () => {
 ```
 
 ### Create Upgrade Modal Component
+
 ```typescript
 // src/components/UpgradeModal.tsx
 import React, { useEffect, useState } from 'react';
@@ -219,7 +232,7 @@ export default function UpgradeModal({ visible, onClose }: UpgradeModalProps) {
 
   const handlePurchase = async () => {
     if (!offering?.availablePackages[0]) return;
-    
+
     setLoading(true);
     try {
       await PurchasesService.purchasePackage(offering.availablePackages[0]);
@@ -350,6 +363,7 @@ export default function UpgradeModal({ visible, onClose }: UpgradeModalProps) {
 ```
 
 ### Update Create Memory Screen with Premium Checks
+
 ```typescript
 // Add to src/screens/CreateMemoryScreen.tsx
 
@@ -373,7 +387,7 @@ const handleCreateMemory = async () => {
   }
 
   // Existing memory creation logic...
-  
+
   // After successful creation
   if (!isPremium) {
     incrementTicketCount();
@@ -381,7 +395,7 @@ const handleCreateMemory = async () => {
 };
 
 // Add to JSX before closing tag
-<UpgradeModal 
+<UpgradeModal
   visible={showUpgradeModal}
   onClose={() => setShowUpgradeModal(false)}
 />
@@ -395,8 +409,8 @@ Update your App.tsx to initialize RevenueCat:
 
 ```typescript
 // Add to App.tsx
-import { PurchasesService } from './src/api/purchases-service';
-import { useUserStore } from './src/state/userStore';
+import { PurchasesService } from "./src/api/purchases-service";
+import { useUserStore } from "./src/state/userStore";
 
 // Add inside App component
 useEffect(() => {
@@ -431,7 +445,7 @@ export default function PremiumSettingsScreen() {
   const isPremium = useUserStore((state) => state.isPremium);
   const ticketCount = useUserStore((state) => state.ticketCount);
   const updatePremiumStatus = useUserStore((state) => state.updatePremiumStatus);
-  
+
   const [customerInfo, setCustomerInfo] = useState<any>(null);
 
   useEffect(() => {
@@ -459,7 +473,7 @@ export default function PremiumSettingsScreen() {
     <SafeAreaView className="flex-1 bg-white">
       <View className="p-6">
         <Text className="text-2xl font-bold mb-6">Premium Status</Text>
-        
+
         {isPremium ? (
           <View className="bg-green-50 p-4 rounded-xl mb-6">
             <View className="flex-row items-center mb-2">
@@ -490,13 +504,13 @@ export default function PremiumSettingsScreen() {
               <Text className="font-medium text-gray-900 mb-2">Subscription Details</Text>
               <Text className="text-gray-600">
                 Next renewal: {
-                  customerInfo.entitlements.active.premium?.expirationDate 
+                  customerInfo.entitlements.active.premium?.expirationDate
                     ? new Date(customerInfo.entitlements.active.premium.expirationDate).toLocaleDateString()
                     : 'N/A'
                 }
               </Text>
             </View>
-            
+
             <Pressable
               onPress={handleCancelSubscription}
               className="bg-red-50 p-4 rounded-xl border border-red-200"
@@ -524,8 +538,9 @@ REVENUECAT_API_KEY=your_actual_revenuecat_api_key_here
 ```
 
 Update purchases-service.ts:
+
 ```typescript
-const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || 'your_fallback_key';
+const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || "your_fallback_key";
 ```
 
 ---
@@ -533,6 +548,7 @@ const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || 'your_
 ## ✅ 7. Testing Checklist
 
 ### Sandbox Testing
+
 - [ ] Create sandbox accounts (iOS/Android)
 - [ ] Test subscription purchase flow
 - [ ] Test subscription restoration
@@ -540,6 +556,7 @@ const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || 'your_
 - [ ] Test free tier limitations
 
 ### Production Testing
+
 - [ ] Verify App Store/Play Console product IDs match
 - [ ] Test with real payments (small amounts)
 - [ ] Verify webhook endpoints (if using server)
@@ -550,15 +567,19 @@ const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || 'your_
 ## 🚨 8. Common Issues & Solutions
 
 ### Issue: Purchase fails with "Product not found"
+
 **Solution**: Verify product IDs match exactly between RevenueCat dashboard and store consoles.
 
 ### Issue: "Unable to connect to RevenueCat"
+
 **Solution**: Check API key and network connectivity. Ensure SDK is properly initialized.
 
 ### Issue: Purchases don't restore
+
 **Solution**: Ensure user is logged into the same Apple ID/Google account used for original purchase.
 
 ### Issue: Premium features don't unlock immediately
+
 **Solution**: Add proper loading states and refresh customer info after purchase.
 
 ---
@@ -582,6 +603,7 @@ const REVENUE_CAT_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || 'your_
 ---
 
 **⚠️ Important Notes:**
+
 - Test thoroughly with sandbox accounts before production
 - Always handle purchase errors gracefully
 - Implement proper loading states for better UX

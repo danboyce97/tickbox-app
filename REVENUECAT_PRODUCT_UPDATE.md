@@ -14,14 +14,16 @@
 ### Location: `src/services/revenueCat.ts`
 
 **Updated Product IDs:**
+
 ```typescript
 const PRODUCT_IDS = {
-  ios: '1022A',          // ✅ Updated from 'com.tickbox.premium'
-  android: '1022A',      // ✅ Updated (change if Android uses different ID)
+  ios: "1022A", // ✅ Updated from 'com.tickbox.premium'
+  android: "1022A", // ✅ Updated (change if Android uses different ID)
 };
 ```
 
 **What This Does:**
+
 - The app now references Product ID `1022A` which matches your App Store Connect configuration
 - When users purchase, RevenueCat will look for this specific product
 
@@ -32,40 +34,49 @@ const PRODUCT_IDS = {
 ### Location: `src/services/revenueCat.ts`
 
 **Updated Entitlement ID:**
+
 ```typescript
-export const ENTITLEMENT_ID = 'TickBox Premium Monthly'; // ✅ Updated from 'premium'
+export const ENTITLEMENT_ID = "TickBox Premium Monthly"; // ✅ Updated from 'premium'
 ```
 
 **Where This Is Used:**
 
 ### A. Premium Status Check (`checkPremiumStatus`)
+
 ```typescript
-const isPremium = customerInfo.entitlements.active['TickBox Premium Monthly'] !== undefined;
+const isPremium = customerInfo.entitlements.active["TickBox Premium Monthly"] !== undefined;
 ```
+
 - ✅ Line 122: Premium status check
 - ✅ Checks if user has active "TickBox Premium Monthly" entitlement
 - ✅ Returns true/false for premium access
 
 ### B. Purchase Verification (`purchasePackage`)
+
 ```typescript
-const isPremium = customerInfo.entitlements.active['TickBox Premium Monthly'] !== undefined;
+const isPremium = customerInfo.entitlements.active["TickBox Premium Monthly"] !== undefined;
 ```
+
 - ✅ Line 202: After purchase completion
 - ✅ Verifies the entitlement was activated
 - ✅ Confirms purchase success
 
 ### C. Restore Purchases (`restorePurchases`)
+
 ```typescript
-const isPremium = customerInfo.entitlements.active['TickBox Premium Monthly'] !== undefined;
+const isPremium = customerInfo.entitlements.active["TickBox Premium Monthly"] !== undefined;
 ```
+
 - ✅ Line 249: After restoration
 - ✅ Checks if restored purchase includes the entitlement
 - ✅ Activates premium features if found
 
 ### D. Subscription Store (`src/state/subscriptionStore.ts`)
+
 ```typescript
 const isPremium = customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined;
 ```
+
 - ✅ Line 44: Global state management
 - ✅ Updates app-wide premium status
 - ✅ Persists premium state across sessions
@@ -77,15 +88,16 @@ const isPremium = customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined
 ### Location: `src/services/revenueCat.ts` - `getMonthlyPackage()`
 
 **Updated Package Detection:**
+
 ```typescript
 // 1st Priority: Find by Product ID
 const productPackage = offering.availablePackages.find(
-  (pkg: any) => pkg.product?.identifier === '1022A' || pkg.identifier === '1022A'
+  (pkg: any) => pkg.product?.identifier === "1022A" || pkg.identifier === "1022A",
 );
 
 // 2nd Priority: Find by package type (MONTHLY)
 const monthlyPackage = offering.availablePackages.find(
-  (pkg: any) => pkg.identifier === '$rc_monthly' || pkg.packageType === 'MONTHLY'
+  (pkg: any) => pkg.identifier === "$rc_monthly" || pkg.packageType === "MONTHLY",
 );
 
 // 3rd Priority: First available package
@@ -93,6 +105,7 @@ return offering.availablePackages[0];
 ```
 
 **What This Does:**
+
 - ✅ Specifically looks for Product ID `1022A` first
 - ✅ Falls back to monthly package type if needed
 - ✅ Ensures the correct product is purchased
@@ -104,16 +117,19 @@ return offering.availablePackages[0];
 ### Location: `src/screens/SubscriptionScreen.tsx`
 
 **Restore Button Exists:**
+
 ```typescript
 <Pressable onPress={handleRestore}>
   <Text>Restore Purchases</Text>
 </Pressable>
 ```
+
 - ✅ Line 289: Restore button present
 - ✅ Line 139: Handler function `handleRestore`
 - ✅ Line 143: Calls `restorePurchases()` from service
 
 **Restore Flow:**
+
 ```
 User taps "Restore Purchases"
     ↓
@@ -126,6 +142,7 @@ If not found: Error → "No active purchases found"
 ```
 
 **Apple Compliance:**
+
 - ✅ Required "Restore Purchases" button present
 - ✅ Properly wired to RevenueCat restore function
 - ✅ Shows success/error messages to user
@@ -138,21 +155,25 @@ If not found: Error → "No active purchases found"
 ### Where Premium Check Is Used:
 
 #### A. Create Memory Screen (`src/screens/CreateMemoryScreen.tsx`)
+
 ```typescript
 const isPremium = useSubscriptionStore((state) => state.isPremium);
 const hasReachedFreeLimit = !isPremium && userMemories.length >= 3;
 ```
+
 - ✅ Free users: Limited to 3 tickets
 - ✅ Premium users: Unlimited tickets
 - ✅ Shows upgrade prompt when limit reached
 
 #### B. Dashboard Screen (`src/screens/DashboardScreen.tsx`)
+
 ```typescript
 const isPremium = useSubscriptionStore((state) => state.isPremium);
 {!isPremium && userMemories.length > 0 && (
   <Text>{userMemories.length}/3 free tickets</Text>
 )}
 ```
+
 - ✅ Shows ticket counter for free users
 - ✅ Hidden for premium users
 
@@ -194,6 +215,7 @@ const isPremium = useSubscriptionStore((state) => state.isPremium);
 ## 7. ✅ RevenueCat Integration Details
 
 ### Configuration:
+
 - **API Key:** `appl_bhecBvklgbcJVceikPBgvNiyXVd` (from `.env` file)
 - **App Name:** TickBox (App Store)
 - **Product ID:** 1022A
@@ -201,6 +223,7 @@ const isPremium = useSubscriptionStore((state) => state.isPremium);
 - **Price:** £1.99/month (configured in App Store Connect)
 
 ### Initialization:
+
 ```typescript
 // App.tsx - Initializes on user login
 await initializeRevenueCat(user.id);
@@ -209,6 +232,7 @@ setupCustomerInfoListener(listener);
 ```
 
 ### Real-time Updates:
+
 - ✅ Listener set up for subscription changes
 - ✅ Automatically updates when purchase completes
 - ✅ Syncs across devices via RevenueCat
@@ -220,6 +244,7 @@ setupCustomerInfoListener(listener);
 Before App Store submission, verify:
 
 ### Purchase Flow:
+
 - [ ] Tap "Add Ticket" as free user (4th time)
 - [ ] Verify upgrade alert appears
 - [ ] Tap "Upgrade Now" → Opens subscription screen
@@ -231,6 +256,7 @@ Before App Store submission, verify:
 - [ ] Verify unlimited tickets now available
 
 ### Restore Flow:
+
 - [ ] Delete app
 - [ ] Reinstall app
 - [ ] Sign in with same account
@@ -240,6 +266,7 @@ Before App Store submission, verify:
 - [ ] Verify unlimited tickets available
 
 ### Entitlement Check:
+
 - [ ] Console logs show: "Premium status: ✅ Active" (for premium users)
 - [ ] Console logs show: "Premium status: ❌ Inactive" (for free users)
 - [ ] Premium badge appears in correct places
@@ -287,7 +314,7 @@ Before App Store submission, verify:
 ✅ **Purchase Flow:** Complete and tested  
 ✅ **Premium Features:** Properly gated behind entitlement check  
 ✅ **Error Handling:** Graceful failure with user feedback  
-✅ **Loading States:** Visual feedback during async operations  
+✅ **Loading States:** Visual feedback during async operations
 
 ### Apple Guidelines Compliance:
 
@@ -295,7 +322,7 @@ Before App Store submission, verify:
 ✅ **Clear Pricing:** Displayed before purchase  
 ✅ **Subscription Terms:** Shown on subscription screen  
 ✅ **Purchase Confirmation:** Success message after purchase  
-✅ **Error Messages:** User-friendly error handling  
+✅ **Error Messages:** User-friendly error handling
 
 ---
 
@@ -304,6 +331,7 @@ Before App Store submission, verify:
 **All changes have been confirmed and implemented correctly.**
 
 The app is now properly configured to:
+
 - Use Product ID: `1022A`
 - Check Entitlement: `TickBox Premium Monthly`
 - Restore purchases via RevenueCat

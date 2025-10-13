@@ -18,13 +18,15 @@ export default function NotificationsScreen() {
   const markAsRead = useNotificationStore((state) => state.markAsRead);
   const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
   const deleteNotification = useNotificationStore((state) => state.deleteNotification);
-  
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["friends", "memories", "activity", "other"]));
+
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(["friends", "memories", "activity", "other"]),
+  );
 
   if (!user) return null;
 
   const notifications = getNotificationsByUser(user.id);
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const getNotificationCategoryInfo = (type: NotificationType) => {
     switch (type) {
@@ -44,25 +46,25 @@ export default function NotificationsScreen() {
   // Group notifications by category
   const groupedNotifications = notifications.reduce((groups: { [key: string]: NotificationGroup }, notification) => {
     const { category, title } = getNotificationCategoryInfo(notification.type);
-    
+
     if (!groups[category]) {
       groups[category] = {
         category,
         title,
         notifications: [],
-        unreadCount: 0
+        unreadCount: 0,
       };
     }
-    
+
     groups[category].notifications.push(notification);
     if (!notification.read) {
       groups[category].unreadCount++;
     }
-    
+
     return groups;
   }, {});
 
-  const notificationSections = Object.values(groupedNotifications).map(group => ({
+  const notificationSections = Object.values(groupedNotifications).map((group) => ({
     title: group.title,
     category: group.category,
     unreadCount: group.unreadCount,
@@ -149,7 +151,7 @@ export default function NotificationsScreen() {
     const isExpanded = expandedCategories.has(section.category);
     const categoryColor = getCategoryColor(section.category);
     const categoryIcon = getCategoryIcon(section.category);
-    
+
     return (
       <Pressable
         onPress={() => toggleCategoryExpansion(section.category)}
@@ -157,35 +159,25 @@ export default function NotificationsScreen() {
       >
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
-            <View className="w-8 h-8 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: `${categoryColor}20` }}>
-              <Ionicons
-                name={categoryIcon as any}
-                size={16}
-                color={categoryColor}
-              />
+            <View
+              className="w-8 h-8 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: `${categoryColor}20` }}
+            >
+              <Ionicons name={categoryIcon as any} size={16} color={categoryColor} />
             </View>
-            <Text className="font-semibold text-gray-900 text-base">
-              {section.title}
-            </Text>
+            <Text className="font-semibold text-gray-900 text-base">{section.title}</Text>
             {section.unreadCount > 0 && (
               <View className="ml-2 bg-blue-600 rounded-full px-2 py-0.5 min-w-[20px] items-center">
-                <Text className="text-white text-xs font-medium">
-                  {section.unreadCount}
-                </Text>
+                <Text className="text-white text-xs font-medium">{section.unreadCount}</Text>
               </View>
             )}
           </View>
-          
+
           <View className="flex-row items-center">
             <Text className="text-gray-500 text-sm mr-2">
               {groupedNotifications[section.category]?.notifications.length || 0}
             </Text>
-            <Ionicons
-              name={isExpanded ? "chevron-up" : "chevron-down"}
-              size={20}
-              color="#9CA3AF"
-            />
+            <Ionicons name={isExpanded ? "chevron-up" : "chevron-down"} size={20} color="#9CA3AF" />
           </View>
         </View>
       </Pressable>
@@ -199,35 +191,26 @@ export default function NotificationsScreen() {
     >
       <View className="flex-row">
         <View className="mr-3">
-          <View className="w-10 h-10 rounded-full items-center justify-center"
-                style={{ backgroundColor: `${getNotificationColor(notification.type)}20` }}>
+          <View
+            className="w-10 h-10 rounded-full items-center justify-center"
+            style={{ backgroundColor: `${getNotificationColor(notification.type)}20` }}
+          >
             <Ionicons
               name={getNotificationIcon(notification.type) as any}
               size={20}
               color={getNotificationColor(notification.type)}
             />
           </View>
-          {!notification.read && (
-            <View className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full" />
-          )}
-        </View>
-        
-        <View className="flex-1">
-          <Text className="font-medium text-gray-900 mb-1">
-            {notification.title}
-          </Text>
-          <Text className="text-gray-600 text-sm mb-2">
-            {notification.message}
-          </Text>
-          <Text className="text-xs text-gray-400">
-            {new Date(notification.createdAt).toLocaleString()}
-          </Text>
+          {!notification.read && <View className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full" />}
         </View>
 
-        <Pressable
-          onPress={() => deleteNotification(notification.id)}
-          className="ml-2 p-1"
-        >
+        <View className="flex-1">
+          <Text className="font-medium text-gray-900 mb-1">{notification.title}</Text>
+          <Text className="text-gray-600 text-sm mb-2">{notification.message}</Text>
+          <Text className="text-xs text-gray-400">{new Date(notification.createdAt).toLocaleString()}</Text>
+        </View>
+
+        <Pressable onPress={() => deleteNotification(notification.id)} className="ml-2 p-1">
           <Ionicons name="close" size={16} color="#9CA3AF" />
         </Pressable>
       </View>
@@ -241,14 +224,11 @@ export default function NotificationsScreen() {
         <Text className="text-xl font-bold text-gray-900">Notifications</Text>
         <View className="flex-row items-center space-x-3">
           {unreadCount > 0 && (
-            <Pressable
-              onPress={() => markAllAsRead(user.id)}
-              className="px-3 py-1 bg-blue-600 rounded-full"
-            >
+            <Pressable onPress={() => markAllAsRead(user.id)} className="px-3 py-1 bg-blue-600 rounded-full">
               <Text className="text-white text-sm font-medium">Mark All Read</Text>
             </Pressable>
           )}
-          
+
           <Pressable
             onPress={() => {
               const allExpanded = expandedCategories.size === Object.keys(groupedNotifications).length;
@@ -273,9 +253,7 @@ export default function NotificationsScreen() {
             <Ionicons name="notifications-outline" size={32} color="#9CA3AF" />
           </View>
           <Text className="text-xl font-semibold text-gray-900 mb-2">No Notifications</Text>
-          <Text className="text-gray-600 text-center">
-            When you have notifications, they will appear here.
-          </Text>
+          <Text className="text-gray-600 text-center">When you have notifications, they will appear here.</Text>
         </View>
       ) : (
         <SectionList

@@ -11,10 +11,10 @@ export default function InviteFriendsScreen() {
   const navigation = useNavigation();
   const { colors } = useTheme();
 
-
   const handleShare = async (method: string) => {
-    const shareMessage = "Join me on TickBox - the best way to keep track of all your event memories! 🎫✨\n\nDownload the app:\n📱 iOS: https://apps.apple.com/app/tickbox\n🤖 Android: https://play.google.com/store/apps/details?id=com.tickbox.app";
-    
+    const shareMessage =
+      "Join me on TickBox - the best way to keep track of all your event memories! 🎫✨\n\nDownload the app:\n📱 iOS: https://apps.apple.com/app/tickbox\n🤖 Android: https://play.google.com/store/apps/details?id=com.tickbox.app";
+
     try {
       // Customize message based on the selected method
       let customMessage = shareMessage;
@@ -22,13 +22,15 @@ export default function InviteFriendsScreen() {
 
       switch (method) {
         case "whatsapp":
-          customMessage = `🎫 *TickBox* - Your Digital Memory Keeper!\n\n${shareMessage.replace('Join me on TickBox', 'Join me on *TickBox*')}`;
+          customMessage = `🎫 *TickBox* - Your Digital Memory Keeper!\n\n${shareMessage.replace("Join me on TickBox", "Join me on *TickBox*")}`;
           break;
         case "instagram":
-          customMessage = "Check out TickBox! 🎫✨ The best way to keep track of all your event memories! #TickBox #Events #Memories";
+          customMessage =
+            "Check out TickBox! 🎫✨ The best way to keep track of all your event memories! #TickBox #Events #Memories";
           break;
         case "twitter":
-          customMessage = "Just discovered @TickBox 🎫 - the perfect app for keeping track of all my event memories! Never lose a ticket again ✨ #TickBox #Events";
+          customMessage =
+            "Just discovered @TickBox 🎫 - the perfect app for keeping track of all my event memories! Never lose a ticket again ✨ #TickBox #Events";
           break;
         case "email":
           title = "You should try TickBox!";
@@ -93,11 +95,11 @@ export default function InviteFriendsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       {/* Header */}
-      <View className="flex-row items-center px-6 py-4" style={{ borderBottomWidth: 1, borderBottomColor: colors.border }}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          className="mr-4"
-        >
+      <View
+        className="flex-row items-center px-6 py-4"
+        style={{ borderBottomWidth: 1, borderBottomColor: colors.border }}
+      >
+        <Pressable onPress={() => navigation.goBack()} className="mr-4">
           <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
         </Pressable>
         <Text style={{ color: colors.text }} className="text-xl font-bold">
@@ -121,31 +123,26 @@ export default function InviteFriendsScreen() {
           >
             <Ionicons name="people" size={40} color={colors.primary} />
           </View>
-          
+
           <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}>
             Share TickBox
           </Text>
-          
+
           <Text style={{ color: colors.textSecondary, fontSize: 16, textAlign: "center", lineHeight: 22 }}>
             Invite your friends to join TickBox and share your amazing event memories together!
           </Text>
         </View>
-
-
 
         {/* Share Options */}
         <View className="px-6 mb-6">
           <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 16 }}>
             Choose how to invite
           </Text>
-          
+
           <View className="space-y-3">
             {shareOptions.map((option) => (
               <TickBoxCard key={option.id} noPadding>
-                <Pressable
-                  onPress={() => handleShare(option.id)}
-                  style={{ padding: 16 }}
-                >
+                <Pressable onPress={() => handleShare(option.id)} style={{ padding: 16 }}>
                   <View className="flex-row items-center">
                     <View
                       style={{
@@ -160,16 +157,14 @@ export default function InviteFriendsScreen() {
                     >
                       <Ionicons name={option.icon} size={24} color={option.color} />
                     </View>
-                    
+
                     <View className="flex-1">
                       <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600", marginBottom: 2 }}>
                         {option.title}
                       </Text>
-                      <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
-                        {option.description}
-                      </Text>
+                      <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{option.description}</Text>
                     </View>
-                    
+
                     <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
                   </View>
                 </Pressable>
@@ -185,7 +180,7 @@ export default function InviteFriendsScreen() {
               Share Invite Link
             </Text>
             <View className="flex-row">
-              <View 
+              <View
                 className="flex-1 mr-3"
                 style={{
                   backgroundColor: colors.background,

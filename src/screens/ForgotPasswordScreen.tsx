@@ -34,8 +34,8 @@ export default function ForgotPasswordScreen() {
     setIsLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       setEmailSent(true);
     } catch (error) {
       Alert.alert("Error", "Failed to send reset email. Please try again.");
@@ -50,25 +50,25 @@ export default function ForgotPasswordScreen() {
         <View className="flex-1 px-6 justify-center">
           {/* Success Icon */}
           <View className="items-center mb-8">
-            <View 
-              style={{ backgroundColor: colors.success + "20" }} 
+            <View
+              style={{ backgroundColor: colors.success + "20" }}
               className="w-24 h-24 rounded-full items-center justify-center mb-6"
             >
               <Ionicons name="mail" size={48} color={colors.success} />
             </View>
-            
+
             <Text style={{ color: colors.text }} className="text-2xl font-bold mb-3 text-center">
               Check Your Email
             </Text>
-            
+
             <Text style={{ color: colors.textSecondary }} className="text-center text-base mb-2">
               We sent a password reset link to:
             </Text>
-            
+
             <Text style={{ color: colors.primary }} className="text-center font-semibold mb-6">
               {email}
             </Text>
-            
+
             <Text style={{ color: colors.textMuted }} className="text-center text-sm">
               Didn't receive the email? Check your spam folder or try again.
             </Text>
@@ -77,13 +77,8 @@ export default function ForgotPasswordScreen() {
           {/* Buttons */}
           <View>
             <GradientBackground style={{ borderRadius: 12, marginBottom: 12 }}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={{ paddingVertical: 16, alignItems: "center" }}
-              >
-                <Text className="text-white font-bold text-lg">
-                  Back to Sign In
-                </Text>
+              <Pressable onPress={() => navigation.goBack()} style={{ paddingVertical: 16, alignItems: "center" }}>
+                <Text className="text-white font-bold text-lg">Back to Sign In</Text>
               </Pressable>
             </GradientBackground>
 
@@ -109,28 +104,18 @@ export default function ForgotPasswordScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView 
-          className="flex-1" 
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           <View className="px-6 py-8">
             {/* Back Button */}
-            <Pressable 
-              onPress={() => navigation.goBack()}
-              style={{ marginBottom: 24 }}
-            >
+            <Pressable onPress={() => navigation.goBack()} style={{ marginBottom: 24 }}>
               <Ionicons name="chevron-back" size={28} color={colors.text} />
             </Pressable>
 
             {/* Header */}
             <View className="items-center mb-8">
-              <View 
-                style={{ backgroundColor: colors.primary + "20" }} 
+              <View
+                style={{ backgroundColor: colors.primary + "20" }}
                 className="w-20 h-20 rounded-full items-center justify-center mb-4"
               >
                 <Ionicons name="lock-closed" size={40} color={colors.primary} />
@@ -184,9 +169,7 @@ export default function ForgotPasswordScreen() {
                   disabled={isLoading}
                   style={{ paddingVertical: 16, alignItems: "center" }}
                 >
-                  <Text className="text-white font-bold text-lg">
-                    {isLoading ? "Sending..." : "Send Reset Link"}
-                  </Text>
+                  <Text className="text-white font-bold text-lg">{isLoading ? "Sending..." : "Send Reset Link"}</Text>
                 </Pressable>
               </GradientBackground>
             </TickBoxCard>

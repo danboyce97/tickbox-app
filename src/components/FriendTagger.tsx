@@ -12,30 +12,31 @@ interface FriendTaggerProps {
 
 export default function FriendTagger({ selectedFriends, onFriendsChange }: FriendTaggerProps) {
   const { colors } = useTheme();
-  const friends = useFriendStore(state => state.friends);
+  const friends = useFriendStore((state) => state.friends);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredFriends = friends.filter(friend =>
-    friend.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    friend.username.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFriends = friends.filter(
+    (friend) =>
+      friend.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      friend.username.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const toggleFriend = (friendId: string) => {
     const isSelected = selectedFriends.includes(friendId);
     let newSelectedFriends;
-    
+
     if (isSelected) {
-      newSelectedFriends = selectedFriends.filter(id => id !== friendId);
+      newSelectedFriends = selectedFriends.filter((id) => id !== friendId);
     } else {
       newSelectedFriends = [...selectedFriends, friendId];
     }
-    
+
     onFriendsChange(newSelectedFriends);
   };
 
   const renderFriend = ({ item: friend }: any) => {
     const isSelected = selectedFriends.includes(friend.id);
-    
+
     return (
       <Pressable
         onPress={() => toggleFriend(friend.id)}
@@ -65,14 +66,10 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
           {friend.profilePhoto ? (
             <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.textMuted }} />
           ) : (
-            <Ionicons
-              name="person"
-              size={20}
-              color={isSelected ? "white" : colors.textMuted}
-            />
+            <Ionicons name="person" size={20} color={isSelected ? "white" : colors.textMuted} />
           )}
         </View>
-        
+
         {/* Friend Info */}
         <View className="flex-1">
           <Text
@@ -83,11 +80,9 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
           >
             {friend.displayName}
           </Text>
-          <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
-            @{friend.username}
-          </Text>
+          <Text style={{ color: colors.textSecondary, fontSize: 14 }}>@{friend.username}</Text>
         </View>
-        
+
         {/* Selection Indicator */}
         {isSelected && (
           <View
@@ -108,9 +103,7 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
   };
 
   const renderSelectedFriends = () => {
-    const selectedFriendObjects = friends.filter(friend => 
-      selectedFriends.includes(friend.id)
-    );
+    const selectedFriendObjects = friends.filter((friend) => selectedFriends.includes(friend.id));
 
     if (selectedFriendObjects.length === 0) return null;
 
@@ -120,7 +113,7 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
           Tagged Friends ({selectedFriendObjects.length})
         </Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          {selectedFriendObjects.map(friend => (
+          {selectedFriendObjects.map((friend) => (
             <View
               key={friend.id}
               style={{
@@ -134,13 +127,8 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
                 alignItems: "center",
               }}
             >
-              <Text className="text-white text-sm font-medium mr-1">
-                {friend.displayName}
-              </Text>
-              <Pressable
-                onPress={() => toggleFriend(friend.id)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
+              <Text className="text-white text-sm font-medium mr-1">{friend.displayName}</Text>
+              <Pressable onPress={() => toggleFriend(friend.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                 <Ionicons name="close-circle" size={16} color="white" />
               </Pressable>
             </View>
@@ -155,9 +143,9 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
       <Text style={{ color: colors.text }} className="text-lg font-semibold mb-4">
         Tag Friends
       </Text>
-      
+
       {renderSelectedFriends()}
-      
+
       {friends.length === 0 ? (
         <View className="items-center py-8">
           <Ionicons name="people-outline" size={48} color={colors.textMuted} />
@@ -197,7 +185,7 @@ export default function FriendTagger({ selectedFriends, onFriendsChange }: Frien
             <FlatList
               data={filteredFriends}
               renderItem={renderFriend}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
                 <View className="items-center py-4">

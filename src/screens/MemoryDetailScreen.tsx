@@ -21,13 +21,13 @@ export default function MemoryDetailScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { memoryId } = route.params;
   const { colors } = useTheme();
-  
+
   const memories = useMemoryStore((state) => state.memories);
   const likeMemory = useMemoryStore((state) => state.likeMemory);
   const unlikeMemory = useMemoryStore((state) => state.unlikeMemory);
   const deleteMemory = useMemoryStore((state) => state.deleteMemory);
   const user = useUserStore((state) => state.user);
-  
+
   const memory = memories.find((m) => m.id === memoryId);
 
   if (!memory) {
@@ -45,7 +45,7 @@ export default function MemoryDetailScreen() {
   const isLiked = user ? memory.likes.includes(user.id) : false;
   const likeCount = memory.likes.length;
   const isOwner = user && memory.userId === user.id;
-  
+
   // Image viewer state
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
   const [viewerImages, setViewerImages] = useState<string[]>([]);
@@ -54,7 +54,7 @@ export default function MemoryDetailScreen() {
 
   const handleLike = () => {
     if (!user) return;
-    
+
     if (isLiked) {
       unlikeMemory(memory.id, user.id);
     } else {
@@ -78,35 +78,31 @@ export default function MemoryDetailScreen() {
 
   const handleDelete = () => {
     if (!isOwner) return;
-    
-    Alert.alert(
-      "Delete Memory",
-      "Are you sure you want to delete this memory? This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive",
-          onPress: () => {
-            deleteMemory(memory.id);
-            navigation.goBack();
-          }
-        }
-      ]
-    );
+
+    Alert.alert("Delete Memory", "Are you sure you want to delete this memory? This action cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          deleteMemory(memory.id);
+          navigation.goBack();
+        },
+      },
+    ]);
   };
 
   // Set header title and buttons dynamically
   useLayoutEffect(() => {
     if (memory && user) {
       const isOwner = memory.userId === user.id;
-      
+
       navigation.setOptions({
         title: memory.title,
         headerRight: () => (
           <View className="flex-row items-center">
             {/* Share button - always visible */}
-            <Pressable 
+            <Pressable
               onPress={() => {
                 // Share functionality - implement later
               }}
@@ -114,17 +110,17 @@ export default function MemoryDetailScreen() {
             >
               <Ionicons name="share-outline" size={24} color="#dc808b" />
             </Pressable>
-            
+
             {/* Edit button - only for owner */}
             {isOwner && (
-              <Pressable 
+              <Pressable
                 onPress={() => navigation.navigate("CreateMemory", { mode: "edit", memoryId })}
                 style={{ marginRight: 16 }}
               >
                 <Ionicons name="create-outline" size={24} color="#dc808b" />
               </Pressable>
             )}
-            
+
             {/* Delete button - only for owner */}
             {isOwner && (
               <Pressable onPress={handleDelete}>
@@ -132,7 +128,7 @@ export default function MemoryDetailScreen() {
               </Pressable>
             )}
           </View>
-        )
+        ),
       });
     }
   }, [navigation, memory, user, memoryId, handleDelete]);
@@ -142,15 +138,11 @@ export default function MemoryDetailScreen() {
     <ScrollView className="flex-1">
       {/* Cover Photo */}
       {memory.coverPhoto ? (
-        <Pressable 
+        <Pressable
           onPress={() => openImageViewer([memory.coverPhoto!], 0, `${memory.title} - Cover Photo`)}
           style={{ height: 280, backgroundColor: colors.border }}
         >
-          <Image 
-            source={{ uri: memory.coverPhoto }}
-            style={{ width: "100%", height: "100%" }}
-            resizeMode="cover"
-          />
+          <Image source={{ uri: memory.coverPhoto }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
         </Pressable>
       ) : (
         <View style={{ height: 280, backgroundColor: colors.border }} className="items-center justify-center">
@@ -181,11 +173,11 @@ export default function MemoryDetailScreen() {
                 {new Date(memory.date).toLocaleDateString("en-GB", {
                   day: "numeric",
                   month: "short",
-                  year: "numeric"
+                  year: "numeric",
                 })}
               </Text>
             </View>
-            
+
             {memory.time && (
               <View className="items-center flex-1">
                 <Text style={{ color: colors.textSecondary }} className="text-sm font-medium mb-1">
@@ -204,7 +196,8 @@ export default function MemoryDetailScreen() {
                   PRICE
                 </Text>
                 <Text style={{ color: "#dc808b" }} className="text-lg font-bold">
-                  {memory.currency === "GBP" ? "£" : memory.currency === "USD" ? "$" : "€"}{memory.price.toFixed(2)}
+                  {memory.currency === "GBP" ? "£" : memory.currency === "USD" ? "$" : "€"}
+                  {memory.price.toFixed(2)}
                 </Text>
               </View>
             )}
@@ -238,12 +231,12 @@ export default function MemoryDetailScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View className="flex-row">
                 {memory.memoryPhotos.map((photo, index) => (
-                  <Pressable 
-                    key={index} 
+                  <Pressable
+                    key={index}
                     className="mr-3"
                     onPress={() => openImageViewer(memory.memoryPhotos, index, `${memory.title} - Memory Photos`)}
                   >
-                    <Image 
+                    <Image
                       source={{ uri: photo }}
                       style={{ width: 120, height: 120, borderRadius: 8 }}
                       resizeMode="cover"
@@ -263,15 +256,11 @@ export default function MemoryDetailScreen() {
     <View className="flex-1">
       {memory.type === "uploaded" && memory.uploadedImage ? (
         // Show uploaded ticket image
-        <Pressable 
+        <Pressable
           className="p-4"
           onPress={() => openImageViewer([memory.uploadedImage!], 0, `${memory.title} - Ticket`)}
         >
-          <Image 
-            source={{ uri: memory.uploadedImage }}
-            style={{ width: "100%", height: 500 }}
-            resizeMode="contain"
-          />
+          <Image source={{ uri: memory.uploadedImage }} style={{ width: "100%", height: 500 }} resizeMode="contain" />
         </Pressable>
       ) : (
         // Show digital ticket
@@ -289,7 +278,7 @@ export default function MemoryDetailScreen() {
         ]}
         initialTab="event"
       />
-      
+
       <ImageViewerModal
         visible={isImageViewerVisible}
         onClose={closeImageViewer}

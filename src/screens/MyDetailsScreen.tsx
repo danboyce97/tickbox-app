@@ -17,17 +17,17 @@ export default function MyDetailsScreen() {
   const { colors } = useTheme();
   const user = useUserStore((state) => state.user);
   const updateUser = useUserStore((state) => state.updateUser);
-  
+
   const [currentEmail, setCurrentEmail] = useState(user?.email || "");
   const [newEmail, setNewEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
@@ -53,12 +53,12 @@ export default function MyDetailsScreen() {
     setIsUpdatingEmail(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       updateUser({ email: newEmail });
       setCurrentEmail(newEmail);
       setNewEmail("");
-      
+
       Alert.alert("Success", "Your email has been updated successfully");
     } catch (error) {
       Alert.alert("Error", "Failed to update email. Please try again.");
@@ -96,13 +96,13 @@ export default function MyDetailsScreen() {
     setIsUpdatingPassword(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       updateUser({ password: newPassword });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
-      
+
       Alert.alert("Success", "Your password has been updated successfully");
     } catch (error) {
       Alert.alert("Error", "Failed to update password. Please try again.");
@@ -113,29 +113,22 @@ export default function MyDetailsScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={0}
       >
-        <ScrollView 
-          className="flex-1" 
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View 
-            className="flex-row items-center px-6 py-4" 
-            style={{ 
-              backgroundColor: colors.surface, 
-              borderBottomWidth: 1, 
-              borderBottomColor: colors.border 
+          <View
+            className="flex-row items-center px-6 py-4"
+            style={{
+              backgroundColor: colors.surface,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.border,
             }}
           >
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="mr-4"
-            >
+            <Pressable onPress={() => navigation.goBack()} className="mr-4">
               <Ionicons name="chevron-back" size={24} color={colors.textSecondary} />
             </Pressable>
             <Text style={{ color: colors.text }} className="text-xl font-bold">
@@ -165,9 +158,7 @@ export default function MyDetailsScreen() {
                     backgroundColor: colors.surface,
                   }}
                 >
-                  <Text style={{ color: colors.textSecondary }}>
-                    {currentEmail}
-                  </Text>
+                  <Text style={{ color: colors.textSecondary }}>{currentEmail}</Text>
                 </View>
               </View>
 
@@ -201,8 +192,8 @@ export default function MyDetailsScreen() {
                 <Pressable
                   onPress={handleUpdateEmail}
                   disabled={isUpdatingEmail || !newEmail.trim()}
-                  style={{ 
-                    paddingVertical: 14, 
+                  style={{
+                    paddingVertical: 14,
                     alignItems: "center",
                     opacity: isUpdatingEmail || !newEmail.trim() ? 0.5 : 1,
                   }}
@@ -253,11 +244,7 @@ export default function MyDetailsScreen() {
                       padding: 4,
                     }}
                   >
-                    <Ionicons
-                      name={showCurrentPassword ? "eye-off" : "eye"}
-                      size={20}
-                      color={colors.textMuted}
-                    />
+                    <Ionicons name={showCurrentPassword ? "eye-off" : "eye"} size={20} color={colors.textMuted} />
                   </Pressable>
                 </View>
               </View>
@@ -295,11 +282,7 @@ export default function MyDetailsScreen() {
                       padding: 4,
                     }}
                   >
-                    <Ionicons
-                      name={showNewPassword ? "eye-off" : "eye"}
-                      size={20}
-                      color={colors.textMuted}
-                    />
+                    <Ionicons name={showNewPassword ? "eye-off" : "eye"} size={20} color={colors.textMuted} />
                   </Pressable>
                 </View>
               </View>
@@ -337,11 +320,7 @@ export default function MyDetailsScreen() {
                       padding: 4,
                     }}
                   >
-                    <Ionicons
-                      name={showConfirmPassword ? "eye-off" : "eye"}
-                      size={20}
-                      color={colors.textMuted}
-                    />
+                    <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={20} color={colors.textMuted} />
                   </Pressable>
                 </View>
               </View>
@@ -350,11 +329,16 @@ export default function MyDetailsScreen() {
               <GradientBackground style={{ borderRadius: 12 }}>
                 <Pressable
                   onPress={handleUpdatePassword}
-                  disabled={isUpdatingPassword || !currentPassword.trim() || !newPassword.trim() || !confirmNewPassword.trim()}
-                  style={{ 
-                    paddingVertical: 14, 
+                  disabled={
+                    isUpdatingPassword || !currentPassword.trim() || !newPassword.trim() || !confirmNewPassword.trim()
+                  }
+                  style={{
+                    paddingVertical: 14,
                     alignItems: "center",
-                    opacity: isUpdatingPassword || !currentPassword.trim() || !newPassword.trim() || !confirmNewPassword.trim() ? 0.5 : 1,
+                    opacity:
+                      isUpdatingPassword || !currentPassword.trim() || !newPassword.trim() || !confirmNewPassword.trim()
+                        ? 0.5
+                        : 1,
                   }}
                 >
                   <Text className="text-white font-bold text-base">

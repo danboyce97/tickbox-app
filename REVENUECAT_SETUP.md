@@ -9,11 +9,13 @@ Your TickBox app is now fully configured with RevenueCat for in-app subscription
 ## 📁 Files Created/Modified
 
 ### New Files Created:
+
 1. **`/src/services/revenueCat.ts`** - RevenueCat service with all SDK operations
 2. **`/src/state/subscriptionStore.ts`** - Zustand store for subscription state management
 3. **`/src/screens/SubscriptionScreen.tsx`** - Premium paywall screen
 
 ### Modified Files:
+
 1. **`/App.tsx`** - Added RevenueCat initialization on app launch
 2. **`/.env`** - Added RevenueCat API key configuration
 3. **`/src/navigation/AppNavigator.tsx`** - Added Subscription screen route
@@ -30,6 +32,7 @@ EXPO_PUBLIC_REVENUECAT_API_KEY=your_revenuecat_public_api_key_here
 ```
 
 **How to get your API key:**
+
 1. Go to [RevenueCat Dashboard](https://app.revenuecat.com)
 2. Navigate to: Projects → Your Project → API Keys
 3. Copy your **Public API Key** (not the secret key!)
@@ -47,14 +50,15 @@ Your products are already configured in the code:
 
 ```typescript
 const PRODUCT_IDS = {
-  ios: 'com.tickbox.premium',
-  android: 'com.tickbox.premium',
+  ios: "com.tickbox.premium",
+  android: "com.tickbox.premium",
 };
 
-export const ENTITLEMENT_ID = 'premium';
+export const ENTITLEMENT_ID = "premium";
 ```
 
 **RevenueCat Dashboard Setup:**
+
 1. Create Products in RevenueCat:
    - iOS: `com.tickbox.premium` (£1.99/month)
    - Android: `com.tickbox.premium` (£1.99/month)
@@ -78,11 +82,11 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 function YourComponent() {
   const navigation = useNavigation<NavigationProp>();
-  
+
   const showPaywall = () => {
     navigation.navigate("Subscription");
   };
-  
+
   return (
     <Pressable onPress={showPaywall}>
       <Text>Go Premium</Text>
@@ -98,11 +102,11 @@ import { useIsPremium } from "../state/subscriptionStore";
 
 function YourComponent() {
   const isPremium = useIsPremium();
-  
+
   if (isPremium) {
     return <PremiumFeature />;
   }
-  
+
   return <FreeVersionFeature />;
 }
 ```
@@ -115,12 +119,12 @@ import { useSubscriptionStore } from "../state/subscriptionStore";
 function YourComponent() {
   const isPremium = useSubscriptionStore((state) => state.isPremium);
   const checkAndUpdateStatus = useSubscriptionStore((state) => state.checkAndUpdateStatus);
-  
+
   useEffect(() => {
     // Refresh subscription status
     checkAndUpdateStatus();
   }, []);
-  
+
   return (
     <Text>Status: {isPremium ? "Premium" : "Free"}</Text>
   );
@@ -145,21 +149,21 @@ function CreateMemoryButton() {
   const isPremium = useIsPremium();
   const memories = useMemoryStore((state) => state.memories);
   const user = useUserStore((state) => state.user);
-  
+
   const handleCreateMemory = () => {
     // Free users: limit to 10 memories
     const userMemories = memories.filter(m => m.userId === user?.id);
-    
+
     if (!isPremium && userMemories.length >= 10) {
       // Show paywall
       navigation.navigate("Subscription");
       return;
     }
-    
+
     // Continue with memory creation
     navigation.navigate("CreateMemory");
   };
-  
+
   return (
     <Pressable onPress={handleCreateMemory}>
       <Text>Create Memory</Text>
@@ -234,6 +238,7 @@ function CreateMemoryButton() {
 ### RevenueCat Test Mode
 
 Enable test mode in RevenueCat Dashboard for easier testing:
+
 - Purchases won't charge real money
 - Subscriptions expire faster (5 minutes instead of 1 month)
 
@@ -252,9 +257,7 @@ Enable test mode in RevenueCat Dashboard for easier testing:
     "android": {
       "package": "com.tickbox.app"
     },
-    "plugins": [
-      "expo-build-properties"
-    ]
+    "plugins": ["expo-build-properties"]
   }
 }
 ```
@@ -292,27 +295,27 @@ For backend integration, set up webhooks in RevenueCat:
 
 ```typescript
 // Backend API endpoint
-app.post('/api/revenuecat-webhook', async (req, res) => {
+app.post("/api/revenuecat-webhook", async (req, res) => {
   const event = req.body;
-  
+
   switch (event.type) {
-    case 'INITIAL_PURCHASE':
+    case "INITIAL_PURCHASE":
       // Grant premium access in your database
       await updateUserPremiumStatus(event.app_user_id, true);
       break;
-      
-    case 'CANCELLATION':
+
+    case "CANCELLATION":
       // Mark for end of current period
       await scheduleRemovePremium(event.app_user_id, event.expiration_at_ms);
       break;
-      
-    case 'EXPIRATION':
+
+    case "EXPIRATION":
       // Remove premium access
       await updateUserPremiumStatus(event.app_user_id, false);
       break;
   }
-  
-  res.status(200).send('OK');
+
+  res.status(200).send("OK");
 });
 ```
 
@@ -331,7 +334,7 @@ const PREMIUM_FEATURES = [
   {
     icon: "infinite",
     title: "Unlimited Memories",
-    description: "Create as many ticket memories as you want"
+    description: "Create as many ticket memories as you want",
   },
   // Add more features...
 ];
@@ -363,16 +366,19 @@ npx react-native log-android
 ### Common Issues
 
 **"No offerings available":**
+
 - Check Product IDs match between code and RevenueCat Dashboard
 - Verify products are linked to offering in RevenueCat
 - Ensure products are approved in App Store/Play Store
 
 **"Purchase failed":**
+
 - Check internet connection
 - Verify user is logged into App Store/Play Store
 - For iOS sandbox, ensure correct sandbox account
 
 **"Entitlement not active":**
+
 - Check entitlement ID matches exactly
 - Verify product is linked to entitlement in RevenueCat Dashboard
 
@@ -383,6 +389,7 @@ npx react-native log-android
 ### RevenueCat Dashboard
 
 Monitor in real-time:
+
 - Active subscriptions
 - Revenue metrics
 - Conversion rates
@@ -397,13 +404,13 @@ import { purchasePackage } from "../services/revenueCat";
 
 const handlePurchase = async () => {
   const result = await purchasePackage(pkg);
-  
+
   if (result.success) {
     // Track successful purchase
-    analytics.track('purchase_completed', {
-      product_id: 'com.tickbox.premium',
+    analytics.track("purchase_completed", {
+      product_id: "com.tickbox.premium",
       price: 1.99,
-      currency: 'GBP'
+      currency: "GBP",
     });
   }
 };
@@ -444,6 +451,7 @@ Before going live:
 ## 🎉 You're All Set!
 
 Your app now has fully functional in-app subscriptions. Users can:
+
 - ✅ Purchase premium subscriptions
 - ✅ Restore previous purchases
 - ✅ See real-time subscription status
@@ -451,6 +459,7 @@ Your app now has fully functional in-app subscriptions. Users can:
 - ✅ Manage subscriptions through App Store/Play Store
 
 **Next Steps:**
+
 1. Add your RevenueCat API key to `.env`
 2. Test purchases in development
 3. Deploy to TestFlight/Internal Testing

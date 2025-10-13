@@ -1,10 +1,13 @@
 # Apple Sign In Setup Guide for TickBox
 
 ## Current Issue
+
 Apple Sign In is failing because it requires specific configuration in your Apple Developer account and app build settings.
 
 ## Why It's Failing
+
 The error "Apple sign in failed. Please try again." indicates one of these issues:
+
 1. **Missing capability in Xcode** - Sign in with Apple capability not enabled
 2. **Missing configuration in Apple Developer Portal** - App ID not configured for Sign in with Apple
 3. **Missing entitlements** - App doesn't have the proper entitlements file
@@ -41,9 +44,7 @@ Add this to your `app.json`:
         "com.apple.developer.applesignin": ["Default"]
       }
     },
-    "plugins": [
-      "expo-apple-authentication"
-    ]
+    "plugins": ["expo-apple-authentication"]
   }
 }
 ```
@@ -51,6 +52,7 @@ Add this to your `app.json`:
 #### Option B: Manual Configuration (if you have native code access)
 
 In Xcode:
+
 1. Open your project in Xcode
 2. Select your target → **Signing & Capabilities**
 3. Click **+ Capability**
@@ -68,6 +70,7 @@ npx expo install expo-apple-authentication
 ### Step 4: Test on Physical Device
 
 **IMPORTANT**: Apple Sign In only works:
+
 - ✅ On physical iOS devices (iPhone/iPad)
 - ✅ With a valid provisioning profile
 - ✅ When the device is signed into an Apple ID
@@ -77,6 +80,7 @@ npx expo install expo-apple-authentication
 ### Step 5: TestFlight Testing
 
 For TestFlight builds:
+
 1. Build must include the Sign in with Apple entitlement
 2. App ID must have Sign in with Apple enabled
 3. Testers must be signed into iCloud on their device
@@ -87,6 +91,7 @@ For TestFlight builds:
 I've updated the app to handle these scenarios:
 
 ### Enhanced Error Handling
+
 - ✅ Checks if Apple Sign In is available before attempting
 - ✅ Shows specific error messages for different failure types
 - ✅ Logs detailed error information to console for debugging
@@ -94,6 +99,7 @@ I've updated the app to handle these scenarios:
 - ✅ Provides fallback to email sign in
 
 ### Better User Experience
+
 - ✅ Clear error message: "Apple Sign In is not properly configured"
 - ✅ Suggests using email sign in as alternative
 - ✅ Doesn't crash or show confusing errors
@@ -101,12 +107,15 @@ I've updated the app to handle these scenarios:
 ## Debugging
 
 ### Check Console Logs
+
 When Apple Sign In is attempted, you'll now see:
+
 ```
 🍎 Starting Apple Sign In...
 ```
 
 If it fails, you'll see one of:
+
 ```
 ❌ Apple Sign In error:
    Error code: ERR_INVALID_OPERATION
@@ -114,26 +123,31 @@ If it fails, you'll see one of:
 ```
 
 Common error codes:
+
 - `ERR_INVALID_OPERATION` - Capability not configured
 - `ERR_NOT_AVAILABLE` - Not available on this device
 - `ERR_REQUEST_CANCELED` - User cancelled (not an error)
 
 ### Manual Test
+
 You can check if Apple Sign In is available by running this in your app:
+
 ```javascript
 const isAvailable = await AppleAuthentication.isAvailableAsync();
-console.log('Apple Sign In available:', isAvailable);
+console.log("Apple Sign In available:", isAvailable);
 ```
 
 ## Quick Fix for Testing
 
 While you set up Apple Sign In properly, users can:
+
 1. **Use Email Sign Up/Sign In** - Fully functional
 2. **Wait for Apple Sign In setup** - Will work once configured
 
 ## Production Checklist
 
 Before releasing to App Store:
+
 - [ ] Sign in with Apple enabled in Apple Developer Portal
 - [ ] `usesAppleSignIn: true` in app.json
 - [ ] Entitlements properly configured
@@ -144,6 +158,7 @@ Before releasing to App Store:
 ## Why Email Sign In Works But Apple Doesn't
 
 Email sign in is a local implementation using Zustand storage, so it works immediately. Apple Sign In requires:
+
 - Native SDK integration
 - Apple Developer account configuration
 - Device with Apple ID signed in
@@ -156,14 +171,17 @@ This is why Apple Sign In needs additional setup.
 If you don't want to set up Apple Sign In immediately, you can hide the button:
 
 In `SignInScreen.tsx` and `SignUpScreen.tsx`, comment out the Apple button section:
+
 ```typescript
-{/* Temporarily disabled
+{
+  /* Temporarily disabled
 {Platform.OS === "ios" && (
   <AppleAuthentication.AppleAuthenticationButton
     ...
   />
 )}
-*/}
+*/
+}
 ```
 
 ## Support Resources
@@ -175,6 +193,7 @@ In `SignInScreen.tsx` and `SignUpScreen.tsx`, comment out the Apple button secti
 ## Summary
 
 **Current State:**
+
 - ✅ Error handling improved
 - ✅ Users get clear guidance
 - ✅ App doesn't crash
@@ -182,6 +201,7 @@ In `SignInScreen.tsx` and `SignUpScreen.tsx`, comment out the Apple button secti
 - ⚠️ Apple Sign In needs configuration
 
 **Next Steps:**
+
 1. Follow Step 1-2 above to configure Apple Developer Portal and app.json
 2. Rebuild with EAS Build
 3. Test in TestFlight

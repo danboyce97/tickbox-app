@@ -1,11 +1,11 @@
 /**
  * Notification Scheduler
- * 
+ *
  * In a real app, this would integrate with:
  * - Expo Notifications for local notifications
  * - Push notification service for server-side scheduling
  * - Background tasks for notification processing
- * 
+ *
  * For this demo, we simulate the scheduling logic.
  */
 
@@ -31,9 +31,9 @@ class NotificationScheduler {
   scheduleOnThisDayNotification(memoryId: string, userId: string, eventTitle: string, eventDate: Date) {
     const nextYear = new Date(eventDate);
     nextYear.setFullYear(nextYear.getFullYear() + 1);
-    
+
     const scheduleId = `onthisday_${memoryId}_${nextYear.getFullYear()}`;
-    
+
     const schedule: NotificationSchedule = {
       id: scheduleId,
       type: "onThisDay",
@@ -45,8 +45,8 @@ class NotificationScheduler {
       data: {
         memoryId,
         eventDate: eventDate.toISOString(),
-        type: "onThisDay"
-      }
+        type: "onThisDay",
+      },
     };
 
     this.schedules.push(schedule);
@@ -60,12 +60,12 @@ class NotificationScheduler {
   scheduleOneWeekToGoNotification(memoryId: string, userId: string, eventTitle: string, eventDate: Date) {
     const oneWeekBefore = new Date(eventDate);
     oneWeekBefore.setDate(oneWeekBefore.getDate() - 7);
-    
+
     // Only schedule if the notification date is in the future
     if (oneWeekBefore <= new Date()) return;
-    
+
     const scheduleId = `oneweektogo_${memoryId}`;
-    
+
     const schedule: NotificationSchedule = {
       id: scheduleId,
       type: "oneWeekToGo",
@@ -77,8 +77,8 @@ class NotificationScheduler {
       data: {
         memoryId,
         eventDate: eventDate.toISOString(),
-        type: "oneWeekToGo"
-      }
+        type: "oneWeekToGo",
+      },
     };
 
     this.schedules.push(schedule);
@@ -90,7 +90,7 @@ class NotificationScheduler {
    */
   scheduleEventTagNotification(memoryId: string, taggedUserId: string, taggerUserId: string, eventTitle: string) {
     const scheduleId = `eventtag_${memoryId}_${taggedUserId}`;
-    
+
     const schedule: NotificationSchedule = {
       id: scheduleId,
       type: "eventTag",
@@ -103,8 +103,8 @@ class NotificationScheduler {
       data: {
         memoryId,
         taggerUserId,
-        type: "eventTag"
-      }
+        type: "eventTag",
+      },
     };
 
     this.schedules.push(schedule);
@@ -119,18 +119,18 @@ class NotificationScheduler {
     userId: string,
     eventTitle: string,
     eventDate: Date,
-    taggedFriends: string[]
+    taggedFriends: string[],
   ) {
     // Schedule On This Day notification for the memory owner
     this.scheduleOnThisDayNotification(memoryId, userId, eventTitle, eventDate);
-    
+
     // Schedule One Week To Go notification if it's a future event
     if (eventDate > new Date()) {
       this.scheduleOneWeekToGoNotification(memoryId, userId, eventTitle, eventDate);
     }
-    
+
     // Schedule event tag notifications for all tagged friends
-    taggedFriends.forEach(friendId => {
+    taggedFriends.forEach((friendId) => {
       this.scheduleEventTagNotification(memoryId, friendId, userId, eventTitle);
     });
   }
@@ -139,14 +139,14 @@ class NotificationScheduler {
    * Get all scheduled notifications for a user
    */
   getScheduledNotifications(userId: string): NotificationSchedule[] {
-    return this.schedules.filter(schedule => schedule.userId === userId);
+    return this.schedules.filter((schedule) => schedule.userId === userId);
   }
 
   /**
    * Cancel a scheduled notification
    */
   cancelNotification(scheduleId: string) {
-    this.schedules = this.schedules.filter(schedule => schedule.id !== scheduleId);
+    this.schedules = this.schedules.filter((schedule) => schedule.id !== scheduleId);
     console.log(`❌ Cancelled notification: ${scheduleId}`);
   }
 
@@ -155,16 +155,12 @@ class NotificationScheduler {
    */
   processDueNotifications(): NotificationSchedule[] {
     const now = new Date();
-    const dueNotifications = this.schedules.filter(schedule => 
-      new Date(schedule.scheduledDate) <= now
-    );
+    const dueNotifications = this.schedules.filter((schedule) => new Date(schedule.scheduledDate) <= now);
 
     // Remove processed notifications from queue
-    this.schedules = this.schedules.filter(schedule =>
-      new Date(schedule.scheduledDate) > now
-    );
+    this.schedules = this.schedules.filter((schedule) => new Date(schedule.scheduledDate) > now);
 
-    dueNotifications.forEach(notification => {
+    dueNotifications.forEach((notification) => {
       console.log(`🔔 Processing notification: ${notification.title} - ${notification.message}`);
       // In a real app, this would trigger the actual notification
       this.sendNotification(notification);
@@ -181,7 +177,7 @@ class NotificationScheduler {
     console.log(`📱 Sending notification to user ${notification.userId}:`, {
       title: notification.title,
       message: notification.message,
-      data: notification.data
+      data: notification.data,
     });
   }
 
@@ -190,7 +186,7 @@ class NotificationScheduler {
    */
   clearUserNotifications(userId: string) {
     const beforeCount = this.schedules.length;
-    this.schedules = this.schedules.filter(schedule => schedule.userId !== userId);
+    this.schedules = this.schedules.filter((schedule) => schedule.userId !== userId);
     const afterCount = this.schedules.length;
     console.log(`🧹 Cleared ${beforeCount - afterCount} notifications for user ${userId}`);
   }
@@ -205,13 +201,7 @@ export const scheduleMemoryNotifications = (
   userId: string,
   eventTitle: string,
   eventDate: Date,
-  taggedFriends: string[] = []
+  taggedFriends: string[] = [],
 ) => {
-  notificationScheduler.scheduleNotificationsForMemory(
-    memoryId,
-    userId,
-    eventTitle,
-    eventDate,
-    taggedFriends
-  );
+  notificationScheduler.scheduleNotificationsForMemory(memoryId, userId, eventTitle, eventDate, taggedFriends);
 };

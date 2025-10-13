@@ -22,7 +22,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
   const { colors } = useTheme();
   const { userId } = route.params;
   const currentUser = useUserStore((state) => state.user);
-  
+
   const [statsFilter, setStatsFilter] = useState<"all" | "thisYear" | "thisMonth" | "last3Months">("all");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showProfilePhotoModal, setShowProfilePhotoModal] = useState(false);
@@ -42,7 +42,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
 
   // Get user data (either from friends list or from a user store if we had one)
   const user = getFriendById(userId);
-  
+
   if (!user || !currentUser) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
@@ -54,23 +54,22 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
   }
 
   // Check if current user is friends with this user
-  const isFriend = friends.some(friend => friend.id === userId);
+  const isFriend = friends.some((friend) => friend.id === userId);
 
   // Filter memories based on selected time period for this user
   const filteredUserMemories = useMemo(() => {
     const allMemories = filterMemories({ userId: user.id, sortBy: "date" });
-    
+
     if (statsFilter === "all") return allMemories;
-    
+
     const now = new Date();
-    return allMemories.filter(memory => {
+    return allMemories.filter((memory) => {
       const memoryDate = new Date(memory.date);
       switch (statsFilter) {
         case "thisYear":
           return memoryDate.getFullYear() === now.getFullYear();
         case "thisMonth":
-          return memoryDate.getFullYear() === now.getFullYear() && 
-                 memoryDate.getMonth() === now.getMonth();
+          return memoryDate.getFullYear() === now.getFullYear() && memoryDate.getMonth() === now.getMonth();
         case "last3Months":
           const threeMonthsAgo = new Date(now);
           threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
@@ -83,26 +82,30 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
 
   const userMemories = filteredUserMemories;
   const totalSpent = userMemories.reduce((sum, memory) => sum + (memory.price || 0), 0);
-  
+
   // Calculate top category
-  const categoryCount = userMemories.reduce((acc, memory) => {
-    acc[memory.category] = (acc[memory.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
-  const topCategory = Object.entries(categoryCount).sort(([,a], [,b]) => b - a)[0]?.[0] || "None";
+  const categoryCount = userMemories.reduce(
+    (acc, memory) => {
+      acc[memory.category] = (acc[memory.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  const topCategory = Object.entries(categoryCount).sort(([, a], [, b]) => b - a)[0]?.[0] || "None";
 
   // Calculate friends with most shared events
-  const sharedEventCounts = friends.reduce((acc, friend) => {
-    const sharedEvents = userMemories.filter(memory => 
-      memory.taggedFriends.includes(friend.id)
-    ).length;
-    acc[friend.id] = sharedEvents;
-    return acc;
-  }, {} as Record<string, number>);
+  const sharedEventCounts = friends.reduce(
+    (acc, friend) => {
+      const sharedEvents = userMemories.filter((memory) => memory.taggedFriends.includes(friend.id)).length;
+      acc[friend.id] = sharedEvents;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const topFriends = friends
-    .filter(friend => sharedEventCounts[friend.id] > 0)
+    .filter((friend) => sharedEventCounts[friend.id] > 0)
     .sort((a, b) => sharedEventCounts[b.id] - sharedEventCounts[a.id])
     .slice(0, 5);
 
@@ -132,7 +135,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
     "Spam or fake account",
     "Harassment or bullying",
     "Impersonation",
-    "Other"
+    "Other",
   ];
 
   const submitReport = async () => {
@@ -172,16 +175,19 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
           </View>
 
           {/* Profile Photo */}
-          <Pressable 
+          <Pressable
             onPress={() => user.profilePhoto && setShowProfilePhotoModal(true)}
-            style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: colors.border, overflow: "hidden", marginBottom: 16 }}
+            style={{
+              width: 120,
+              height: 120,
+              borderRadius: 60,
+              backgroundColor: colors.border,
+              overflow: "hidden",
+              marginBottom: 16,
+            }}
           >
             {user.profilePhoto ? (
-              <Image 
-                source={{ uri: user.profilePhoto }} 
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="cover"
-              />
+              <Image source={{ uri: user.profilePhoto }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
             ) : (
               <View className="flex-1 items-center justify-center">
                 <Ionicons name="person" size={48} color={colors.textMuted} />
@@ -193,9 +199,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
           <Text style={{ color: colors.text, fontSize: 28, fontWeight: "bold", marginBottom: 4 }}>
             {user.displayName}
           </Text>
-          <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 12 }}>
-            @{user.username}
-          </Text>
+          <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 12 }}>@{user.username}</Text>
 
           {/* Bio */}
           {user.bio && (
@@ -209,17 +213,16 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
             {user.location && (
               <>
                 <Ionicons name="location-outline" size={18} color={colors.textSecondary} />
-                <Text style={{ color: colors.textSecondary, marginLeft: 6 }}>
-                  {user.location}
-                </Text>
+                <Text style={{ color: colors.textSecondary, marginLeft: 6 }}>{user.location}</Text>
                 <View style={{ width: 32 }} /> {/* Spacer */}
               </>
             )}
             <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
             <Text style={{ color: colors.textSecondary, marginLeft: 6 }}>
-              Joined {new Date(user.joinDate).toLocaleDateString("en-US", { 
-                month: "short", 
-                year: "2-digit" 
+              Joined{" "}
+              {new Date(user.joinDate).toLocaleDateString("en-US", {
+                month: "short",
+                year: "2-digit",
               })}
             </Text>
           </View>
@@ -240,9 +243,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
               }}
             >
               <Ionicons name="person-remove" size={16} color={colors.error} />
-              <Text style={{ color: colors.error, marginLeft: 8, fontWeight: "500" }}>
-                Remove Friend
-              </Text>
+              <Text style={{ color: colors.error, marginLeft: 8, fontWeight: "500" }}>Remove Friend</Text>
             </Pressable>
           )}
         </View>
@@ -250,9 +251,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
         {/* My Stats Section */}
         <View className="px-6 mb-6">
           <View className="flex-row items-center justify-between mb-4">
-            <Text style={{ color: colors.text, fontSize: 22, fontWeight: "bold" }}>
-              {user.displayName}'s Stats
-            </Text>
+            <Text style={{ color: colors.text, fontSize: 22, fontWeight: "bold" }}>{user.displayName}'s Stats</Text>
             <Pressable
               onPress={() => setShowFilterModal(true)}
               style={{
@@ -268,10 +267,13 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
             >
               <Ionicons name="filter" size={16} color={colors.textSecondary} />
               <Text style={{ color: colors.textSecondary, marginLeft: 6, fontSize: 14 }}>
-                {statsFilter === "all" ? "All Time" : 
-                 statsFilter === "thisYear" ? "This Year" : 
-                 statsFilter === "thisMonth" ? "This Month" : 
-                 "Last 3 Months"}
+                {statsFilter === "all"
+                  ? "All Time"
+                  : statsFilter === "thisYear"
+                    ? "This Year"
+                    : statsFilter === "thisMonth"
+                      ? "This Month"
+                      : "Last 3 Months"}
               </Text>
               <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
             </Pressable>
@@ -298,9 +300,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                 <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
                   {userMemories.length}
                 </Text>
-                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>
-                  Total Tickets
-                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>Total Tickets</Text>
               </View>
 
               {/* Total Spent */}
@@ -319,11 +319,10 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   <Ionicons name="wallet" size={28} color={colors.success} />
                 </View>
                 <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
-                  {currentUser ? getCurrencySymbol(currentUser.preferredCurrency) : "£"}{totalSpent.toFixed(0)}
+                  {currentUser ? getCurrencySymbol(currentUser.preferredCurrency) : "£"}
+                  {totalSpent.toFixed(0)}
                 </Text>
-                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>
-                  Total Spent
-                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>Total Spent</Text>
               </View>
 
               {/* Top Category */}
@@ -341,12 +340,13 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                 >
                   <Ionicons name="pricetag" size={28} color={colors.warning} />
                 </View>
-                <Text style={{ color: colors.text, fontSize: 16, fontWeight: "bold", textAlign: "center" }} numberOfLines={1}>
+                <Text
+                  style={{ color: colors.text, fontSize: 16, fontWeight: "bold", textAlign: "center" }}
+                  numberOfLines={1}
+                >
                   {topCategory}
                 </Text>
-                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>
-                  Top Category
-                </Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 12, textAlign: "center" }}>Top Category</Text>
               </View>
             </View>
           </TickBoxCard>
@@ -357,12 +357,20 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
           <TickBoxCard>
             <View className="flex-row items-center justify-between mb-4">
               <View className="flex-row items-center">
-                <View style={{ backgroundColor: colors.warning, width: 24, height: 24, borderRadius: 4, justifyContent: "center", alignItems: "center", marginRight: 8 }}>
+                <View
+                  style={{
+                    backgroundColor: colors.warning,
+                    width: 24,
+                    height: 24,
+                    borderRadius: 4,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 8,
+                  }}
+                >
                   <Ionicons name="trophy" size={14} color="white" />
                 </View>
-                <Text style={{ color: colors.text, fontSize: 18, fontWeight: "bold" }}>
-                  Friends Leaderboard
-                </Text>
+                <Text style={{ color: colors.text, fontSize: 18, fontWeight: "bold" }}>Friends Leaderboard</Text>
               </View>
             </View>
 
@@ -379,46 +387,40 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   const sharedEventCount = sharedEventCounts[friend.id];
                   const rankColors = [colors.warning, colors.textSecondary, colors.textMuted];
                   const rankColor = rankColors[index] || colors.textMuted;
-                  
+
                   return (
                     <View key={friend.id} className="flex-row items-center py-3">
-                      <View 
-                        style={{ 
+                      <View
+                        style={{
                           backgroundColor: index < 3 ? rankColor : colors.border,
                           width: 24,
                           height: 24,
                           borderRadius: 12,
                           alignItems: "center",
                           justifyContent: "center",
-                          marginRight: 12
+                          marginRight: 12,
                         }}
                       >
-                        <Text 
-                          style={{ 
+                        <Text
+                          style={{
                             color: index < 3 ? "white" : colors.textMuted,
                             fontSize: 12,
-                            fontWeight: "bold"
+                            fontWeight: "bold",
                           }}
                         >
                           {index + 1}
                         </Text>
                       </View>
-                      
+
                       <View style={{ backgroundColor: colors.border }} className="w-10 h-10 rounded-full mr-3" />
-                      
+
                       <View className="flex-1">
-                        <Text style={{ color: colors.text, fontWeight: "500" }}>
-                          {friend.displayName}
-                        </Text>
-                        <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
-                          @{friend.username}
-                        </Text>
+                        <Text style={{ color: colors.text, fontWeight: "500" }}>{friend.displayName}</Text>
+                        <Text style={{ color: colors.textSecondary, fontSize: 12 }}>@{friend.username}</Text>
                       </View>
-                      
+
                       <View className="items-end">
-                        <Text style={{ color: colors.primary, fontWeight: "600" }}>
-                          {sharedEventCount}
-                        </Text>
+                        <Text style={{ color: colors.primary, fontWeight: "600" }}>{sharedEventCount}</Text>
                         <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
                           {sharedEventCount === 1 ? "event" : "events"}
                         </Text>
@@ -433,27 +435,32 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
       </ScrollView>
 
       {/* Stats Filter Modal */}
-      <Modal
-        visible={showFilterModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        transparent={true}
-      >
+      <Modal visible={showFilterModal} animationType="slide" presentationStyle="pageSheet" transparent={true}>
         <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 50 }}>
-            <View className="flex-row justify-between items-center p-6 border-b" style={{ borderBottomColor: colors.border }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              paddingBottom: 50,
+            }}
+          >
+            <View
+              className="flex-row justify-between items-center p-6 border-b"
+              style={{ borderBottomColor: colors.border }}
+            >
               <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>Filter Stats</Text>
               <Pressable onPress={() => setShowFilterModal(false)}>
                 <Ionicons name="close" size={24} color={colors.textSecondary} />
               </Pressable>
             </View>
-            
+
             <View className="p-6 space-y-4">
               {[
                 { key: "all", label: "All Time" },
                 { key: "thisYear", label: "This Year" },
                 { key: "last3Months", label: "Last 3 Months" },
-                { key: "thisMonth", label: "This Month" }
+                { key: "thisMonth", label: "This Month" },
               ].map((option) => (
                 <Pressable
                   key={option.key}
@@ -463,12 +470,8 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   }}
                   className="flex-row items-center justify-between py-3"
                 >
-                  <Text style={{ color: colors.text, fontSize: 16 }}>
-                    {option.label}
-                  </Text>
-                  {statsFilter === option.key && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
-                  )}
+                  <Text style={{ color: colors.text, fontSize: 16 }}>{option.label}</Text>
+                  {statsFilter === option.key && <Ionicons name="checkmark" size={20} color={colors.primary} />}
                 </Pressable>
               ))}
             </View>
@@ -493,26 +496,43 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
         transparent={true}
         onRequestClose={() => setShowMenuModal(false)}
       >
-        <Pressable 
-          className="flex-1 justify-end" 
+        <Pressable
+          className="flex-1 justify-end"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
           onPress={() => setShowMenuModal(false)}
         >
           <Pressable onPress={(e) => e.stopPropagation()}>
-            <View style={{ backgroundColor: colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 50 }}>
-              <View className="flex-row justify-between items-center p-6 border-b" style={{ borderBottomColor: colors.border }}>
+            <View
+              style={{
+                backgroundColor: colors.background,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingBottom: 50,
+              }}
+            >
+              <View
+                className="flex-row justify-between items-center p-6 border-b"
+                style={{ borderBottomColor: colors.border }}
+              >
                 <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>User Options</Text>
                 <Pressable onPress={() => setShowMenuModal(false)}>
                   <Ionicons name="close" size={24} color={colors.textSecondary} />
                 </Pressable>
               </View>
-              
+
               <View className="p-6">
-                <Pressable
-                  onPress={handleBlockUser}
-                  className="flex-row items-center py-4"
-                >
-                  <View style={{ backgroundColor: colors.warning + "20", width: 40, height: 40, borderRadius: 20, justifyContent: "center", alignItems: "center", marginRight: 12 }}>
+                <Pressable onPress={handleBlockUser} className="flex-row items-center py-4">
+                  <View
+                    style={{
+                      backgroundColor: colors.warning + "20",
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: 12,
+                    }}
+                  >
                     <Ionicons name="ban" size={20} color={colors.warning} />
                   </View>
                   <View className="flex-1">
@@ -521,11 +541,18 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   </View>
                 </Pressable>
 
-                <Pressable
-                  onPress={handleReportUser}
-                  className="flex-row items-center py-4"
-                >
-                  <View style={{ backgroundColor: colors.error + "20", width: 40, height: 40, borderRadius: 20, justifyContent: "center", alignItems: "center", marginRight: 12 }}>
+                <Pressable onPress={handleReportUser} className="flex-row items-center py-4">
+                  <View
+                    style={{
+                      backgroundColor: colors.error + "20",
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: 12,
+                    }}
+                  >
                     <Ionicons name="flag" size={20} color={colors.error} />
                   </View>
                   <View className="flex-1">
@@ -547,17 +574,47 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
         onRequestClose={() => setShowBlockModal(false)}
       >
         <View className="flex-1 justify-center items-center" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderRadius: 16, padding: 24, marginHorizontal: 32, width: "85%" }}>
-            <View style={{ backgroundColor: colors.warning + "20", width: 64, height: 64, borderRadius: 32, justifyContent: "center", alignItems: "center", alignSelf: "center", marginBottom: 16 }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 16,
+              padding: 24,
+              marginHorizontal: 32,
+              width: "85%",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.warning + "20",
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                marginBottom: 16,
+              }}
+            >
               <Ionicons name="ban" size={32} color={colors.warning} />
             </View>
 
-            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}>
+            <Text
+              style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}
+            >
               Block {user.displayName}?
             </Text>
-            
-            <Text style={{ color: colors.textSecondary, fontSize: 16, textAlign: "center", marginBottom: 24, lineHeight: 22 }}>
-              They will not be able to see your profile or memories, and you will not see theirs. This will also remove them from your friends list.
+
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontSize: 16,
+                textAlign: "center",
+                marginBottom: 24,
+                lineHeight: 22,
+              }}
+            >
+              They will not be able to see your profile or memories, and you will not see theirs. This will also remove
+              them from your friends list.
             </Text>
 
             <View className="flex-row" style={{ gap: 12 }}>
@@ -572,9 +629,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   borderColor: colors.border,
                 }}
               >
-                <Text style={{ color: colors.text, textAlign: "center", fontWeight: "600", fontSize: 16 }}>
-                  Cancel
-                </Text>
+                <Text style={{ color: colors.text, textAlign: "center", fontWeight: "600", fontSize: 16 }}>Cancel</Text>
               </Pressable>
 
               <Pressable
@@ -586,9 +641,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                   borderRadius: 12,
                 }}
               >
-                <Text style={{ color: "white", textAlign: "center", fontWeight: "600", fontSize: 16 }}>
-                  Block
-                </Text>
+                <Text style={{ color: "white", textAlign: "center", fontWeight: "600", fontSize: 16 }}>Block</Text>
               </Pressable>
             </View>
           </View>
@@ -596,21 +649,29 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
       </Modal>
 
       {/* Report Modal */}
-      <Modal
-        visible={showReportModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        transparent={true}
-      >
+      <Modal visible={showReportModal} animationType="slide" presentationStyle="pageSheet" transparent={true}>
         <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: "80%", paddingBottom: 50 }}>
-            <View className="flex-row justify-between items-center p-6 border-b" style={{ borderBottomColor: colors.border }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              maxHeight: "80%",
+              paddingBottom: 50,
+            }}
+          >
+            <View
+              className="flex-row justify-between items-center p-6 border-b"
+              style={{ borderBottomColor: colors.border }}
+            >
               <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>Report User</Text>
-              <Pressable onPress={() => {
-                setShowReportModal(false);
-                setSelectedReportReason(null);
-                setReportReason("");
-              }}>
+              <Pressable
+                onPress={() => {
+                  setShowReportModal(false);
+                  setSelectedReportReason(null);
+                  setReportReason("");
+                }}
+              >
                 <Ionicons name="close" size={24} color={colors.textSecondary} />
               </Pressable>
             </View>
@@ -640,7 +701,13 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
                     borderColor: selectedReportReason === reason ? colors.primary : colors.border,
                   }}
                 >
-                  <Text style={{ color: selectedReportReason === reason ? colors.primary : colors.text, fontSize: 16, fontWeight: selectedReportReason === reason ? "600" : "400" }}>
+                  <Text
+                    style={{
+                      color: selectedReportReason === reason ? colors.primary : colors.text,
+                      fontSize: 16,
+                      fontWeight: selectedReportReason === reason ? "600" : "400",
+                    }}
+                  >
                     {reason}
                   </Text>
                   {selectedReportReason === reason && (
@@ -675,11 +742,7 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
 
             <View className="px-6 pb-6">
               <GradientBackground style={{ borderRadius: 12, opacity: selectedReportReason ? 1 : 0.5 }}>
-                <Pressable
-                  onPress={submitReport}
-                  disabled={!selectedReportReason}
-                  style={{ paddingVertical: 16 }}
-                >
+                <Pressable onPress={submitReport} disabled={!selectedReportReason} style={{ paddingVertical: 16 }}>
                   <Text style={{ color: "white", textAlign: "center", fontWeight: "600", fontSize: 16 }}>
                     Submit Report
                   </Text>
@@ -698,27 +761,51 @@ export default function UserProfileScreen({ route }: UserProfileScreenProps) {
         onRequestClose={() => setShowReportSuccess(false)}
       >
         <View className="flex-1 justify-center items-center" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: colors.background, borderRadius: 16, padding: 24, marginHorizontal: 32, width: "85%" }}>
-            <View style={{ backgroundColor: colors.success + "20", width: 64, height: 64, borderRadius: 32, justifyContent: "center", alignItems: "center", alignSelf: "center", marginBottom: 16 }}>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 16,
+              padding: 24,
+              marginHorizontal: 32,
+              width: "85%",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.success + "20",
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                marginBottom: 16,
+              }}
+            >
               <Ionicons name="checkmark-circle" size={32} color={colors.success} />
             </View>
 
-            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}>
+            <Text
+              style={{ color: colors.text, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 8 }}
+            >
               Report Submitted
             </Text>
-            
-            <Text style={{ color: colors.textSecondary, fontSize: 16, textAlign: "center", marginBottom: 24, lineHeight: 22 }}>
+
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontSize: 16,
+                textAlign: "center",
+                marginBottom: 24,
+                lineHeight: 22,
+              }}
+            >
               Thank you for helping keep TickBox safe. Our support team will review your report.
             </Text>
 
             <GradientBackground style={{ borderRadius: 12 }}>
-              <Pressable
-                onPress={() => setShowReportSuccess(false)}
-                style={{ paddingVertical: 14 }}
-              >
-                <Text style={{ color: "white", textAlign: "center", fontWeight: "600", fontSize: 16 }}>
-                  Done
-                </Text>
+              <Pressable onPress={() => setShowReportSuccess(false)} style={{ paddingVertical: 14 }}>
+                <Text style={{ color: "white", textAlign: "center", fontWeight: "600", fontSize: 16 }}>Done</Text>
               </Pressable>
             </GradientBackground>
           </View>
