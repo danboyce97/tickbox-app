@@ -1,0 +1,36 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ============= USER PROFILE PHOTOS =============
+    // Path: users/{userId}/profile-photo-*.jpg
+    match /users/{userId}/{allPaths=**} {
+      // Allow any authenticated user to read profile photos (for viewing profiles)
+      allow read: if request.auth != null;
+
+      // Allow users to write only to their own folder
+      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Allow users to delete their own photos
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ============= MEMORY PHOTOS (FUTURE-PROOFING) =============
+    // Path: memories/{userId}/*
+    match /memories/{userId}/{allPaths=**} {
+      // Allow any authenticated user to read memory photos (for viewing friends' memories)
+      allow read: if request.auth != null;
+
+      // Allow users to write only to their own folder
+      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Allow users to delete their own photos
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ============= DENY ALL OTHER PATHS =============
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

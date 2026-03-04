@@ -1,0 +1,121 @@
++ exec gosu vibecode node node_modules/.bin/expo start --localhost
+env: load .env
+env: export EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID EXPO_PUBLIC_VIBECODE_GOOGLE_API_KEY EXPO_PUBLIC_REVENUECAT_API_KEY EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID EXPO_TOKEN EXPO_PUBLIC_FIREBASE_API_KEY EXPO_PUBLIC_VIBECODE_REVENUECAT_TEST_KEY EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY EXPO_PUBLIC_VIBECODE_REVENUECAT_APPLE_KEY EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN EXPO_PUBLIC_VIBECODE_GROK_API_KEY EXPO_PUBLIC_FIREBASE_APP_ID EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY EXPO_PUBLIC_VIBECODE_ANTHROPIC_API_KEY EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID EXPO_PUBLIC_FIREBASE_PROJECT_ID EXPO_PUBLIC_VIBECODE_REVENUECAT_GOOGLE_KEY
+Starting project at /home/user/workspace/mobile
+[Metro Config] Version: 2025-02-03-v3-fix-dynamic-imports (source: workspace-mobile)
+[Metro Config] Shared folder: /home/user/workspace/shared
+[Metro Config] Shared folder exists: false
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+ WARN  Attempted to import the module "/home/user/workspace/mobile/node_modules/@firebase/auth/dist/rn/index.js" which is not listed in the "exports" of "/home/user/workspace/mobile/node_modules/@firebase/auth" under the requested subpath "./dist/rn/index.js". Falling back to file-based resolution. Consider updating the call site or asking the package maintainer(s) to expose this API.
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1606/1608)
+iOS Bundled 4401ms index.ts (1611 modules)
+ WARN  The native view manager for module(ExpoAppleAuthentication) ) from NativeViewManagerAdapter isn't exported by expo-modules-core. Views of this type may not render correctly. Exported view managers: [ExpoVideo, ExpoContactAccessButton_ExpoContactAccessButton, ExpoMeshGradient_MeshGradientView, ExpoClipboard, SymbolModule_SymbolView, ExpoContactAccessButton, Galeria, ExponentGLView_GLView, ExponentGLView, ExpoLinearGradient, ExpoBlurView, ExpoImage_ImageView, ExpoClipboard_ClipboardPasteButton, ExpoVideoView, Galeria_GaleriaView, ExpoImage, ExpoVideoView_ExpoVideoView, ExpoLivePhoto_LivePhotoView, ExpoGlassEffect, ExpoVideo_VideoView, ExpoLinearGradient_LinearGradientView, SymbolModule, ExpoCamera, ExpoCamera_CameraView, ExpoGlassEffect_GlassView, ExpoBlurView_BlurView, ExpoLivePhoto, ExpoGlassEffect_GlassContainer, ExpoMeshGradient].
+ LOG  [index] Project ID is:  c9541a05-54f9-483e-81d4-7d06951cc16a
+ LOG  🧭 AppNavigator: State {"hasUser": true, "introSeen": true, "isAuthenticated": true, "profileSetupComplete": true}
+ LOG  📱 MainTabNavigator: Rendering {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}, "userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: START
+ LOG  📱 DashboardScreen: navigation ok
+ LOG  📱 DashboardScreen: theme ok {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}}
+ LOG  📱 DashboardScreen: user ok {"userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: stores ok {"memoriesCount": 0}
+ LOG  📱 DashboardScreen: About to render
+ LOG  📡 Subscribing to own memories in real-time...
+ LOG  📡 Setting up real-time subscription for own memories... IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  📱 Loading user memories on app startup...
+ LOG  🔄 Loading memories from Firebase for user: IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  🧹 Starting ghost account cleanup...
+ LOG  📊 Checking 13 local accounts against Firebase
+ LOG  📱 Setting up real-time subscriptions for user: IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  📱 Registering for push notifications...
+ LOG  📱 Current user ID: IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  📱 Push registration starting with projectId: 6f37ea61-53f4-4fdd-9bba-07d51ec40c35
+ LOG  📱 Running on physical device, checking permissions...
+ LOG  📱 DashboardScreen: START
+ LOG  📱 DashboardScreen: navigation ok
+ LOG  📱 DashboardScreen: theme ok {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}}
+ LOG  📱 DashboardScreen: user ok {"userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: stores ok {"memoriesCount": 0}
+ LOG  📱 DashboardScreen: About to render
+ LOG  📱 DashboardScreen: START
+ LOG  📱 DashboardScreen: navigation ok
+ LOG  📱 DashboardScreen: theme ok {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}}
+ LOG  📱 DashboardScreen: user ok {"userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: stores ok {"memoriesCount": 46}
+ LOG  📱 DashboardScreen: About to render
+ LOG  📱 Existing permission status: granted
+ LOG  📡 Real-time update received: 16 own memories
+ LOG  📱 DashboardScreen: START
+ LOG  📱 DashboardScreen: navigation ok
+ LOG  📱 DashboardScreen: theme ok {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}}
+ LOG  📱 DashboardScreen: user ok {"userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: stores ok {"memoriesCount": 46}
+ LOG  📱 DashboardScreen: About to render
+ LOG  ✅ Cleaned up 0 orphaned memories
+ LOG  📱 MainTabNavigator: Rendering {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}, "userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  ✅ Loaded 16 memories from Firebase
+ LOG  ✅ Loaded comments from MemoryComments collection for 16 memories
+ LOG  📱 DashboardScreen: START
+ LOG  📱 DashboardScreen: navigation ok
+ LOG  📱 DashboardScreen: theme ok {"colors": {"accent": "#dc808b", "background": "#FAFAFA", "border": "#F3F4F6", "cardBackground": "#FFFFFF", "error": "#EF4444", "primary": "#dc808b", "primaryEnd": "#c96d7a", "primaryStart": "#dc808b", "success": "#10B981", "surface": "#FFFFFF", "text": "#1F2937", "textMuted": "#9CA3AF", "textSecondary": "#6B7280", "warning": "#F59E0B"}}
+ LOG  📱 DashboardScreen: user ok {"userId": "IFQnR9obcqMeFTnyUgSz94Nz5RI3"}
+ LOG  📱 DashboardScreen: stores ok {"memoriesCount": 46}
+ LOG  📱 DashboardScreen: About to render
+ LOG  ✅ User memories loaded on startup
+ LOG  ✅ RevenueCat module loaded successfully
+ LOG  📋 RevenueCat Configuration:
+ LOG     Entitlement ID: TickBox Premium Monthly
+ LOG     Offering ID: default
+ LOG     Package ID: $rc_monthly
+ LOG     Product ID: 1022A
+ LOG  🔧 Initializing RevenueCat SDK...
+ LOG  📝 RevenueCat log level set to DEBUG
+ INFO  [RevenueCat] ℹ️ Purchases instance already set. Did you mean to configure two Purchases objects?
+ LOG  👤 User attributes set for: IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  ✅ RevenueCat initialized successfully
+ LOG     API Key (last 8 chars): hbedbgft
+ DEBUG  [RevenueCat] ℹ️ setting values for attributes: ["user_id"]
+ DEBUG  [RevenueCat] ℹ️ Offerings cache is stale, updating from network in foreground
+ DEBUG  [RevenueCat] ℹ️ Attribute set locally: [SubscriberAttribute] key: user_id value: IFQnR9obcqMeFTnyUgSz94Nz5RI3 setTime: 2026-03-03 14:31:54 +0000. It will be synced to the backend when the app backgrounds/foregrounds or when a purchase is made.
+ DEBUG  [RevenueCat] ℹ️ GetOfferingsOperation: Started
+ DEBUG  [RevenueCat] ℹ️ CustomerInfo cache is stale, updating from network in foreground.
+ DEBUG  [RevenueCat] ℹ️ CustomerInfo cache is stale, updating from network in foreground.
+ DEBUG  [RevenueCat] ℹ️ There are no requests currently running, starting request GET /v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3/offerings
+ DEBUG  [RevenueCat] ℹ️ API request started: GET '/v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3/offerings'
+ DEBUG  [RevenueCat] ℹ️ Network operation 'GetCustomerInfoOperation' found with the same cache key 'GetCustomerInfo…'. Skipping request.
+ DEBUG  [RevenueCat] ℹ️ Network operation 'GetCustomerInfoOperation' found with the same cache key 'GetCustomerInfo…'. Skipping request.
+ LOG  ✅ Ghost account cleanup complete. Removed 0 accounts.
+ DEBUG  [RevenueCat] ℹ️ API request completed: GET '/v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3/offerings' (200)
+ DEBUG  [RevenueCat] ℹ️ No existing products cached, starting store products request for: ["1022B"]
+ DEBUG  [RevenueCat] ℹ️ GetOfferingsOperation: Finished
+ DEBUG  [RevenueCat] ℹ️ Serial request done: GET /v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3/offerings, 0 requests left in the queue
+ DEBUG  [RevenueCat] ℹ️ GetCustomerInfoOperation: Started
+ DEBUG  [RevenueCat] ℹ️ There are no requests currently running, starting request GET /v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ DEBUG  [RevenueCat] ℹ️ API request started: GET '/v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3'
+ DEBUG  [RevenueCat] ℹ️ API request completed: GET '/v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3' (200)
+ DEBUG  [RevenueCat] ℹ️ Sending latest CustomerInfo to delegate.
+ DEBUG  [RevenueCat] 😻 CustomerInfo updated from network.
+ DEBUG  [RevenueCat] 😻 CustomerInfo updated from network.
+ LOG  💎 Premium status: ✅ Active
+ LOG     Product ID: 1022B
+ LOG     Expires: 2026-03-24T07:38:38Z
+ DEBUG  [RevenueCat] 😻 CustomerInfo updated from network.
+ LOG  ✅ Customer info listener set up
+ DEBUG  [RevenueCat] ℹ️ GetCustomerInfoOperation: Finished
+ DEBUG  [RevenueCat] ℹ️ Serial request done: GET /v1/subscribers/IFQnR9obcqMeFTnyUgSz94Nz5RI3, 0 requests left in the queue
+ DEBUG  [RevenueCat] 😻 Store products request received response
+ DEBUG  [RevenueCat] ℹ️ Store products request finished
+ ERROR  [RevenueCat] 🍎‼️ Error fetching offerings - The operation couldn’t be completed. (RevenueCat.OfferingsManager.Error error 1.)
+There's a problem with your configuration. None of the products registered in the RevenueCat dashboard could be fetched from App Store Connect (or the StoreKit Configuration file if one is being used). 
+More information: https://rev.cat/why-are-offerings-empty
+ ERROR  Error loading friend memories: [TypeError: Object is not a function]
+ ERROR  Error loading friend memories: [TypeError: Object is not a function]
+ LOG  📱 Registering for push notifications...
+ LOG  📱 Current user ID: IFQnR9obcqMeFTnyUgSz94Nz5RI3
+ LOG  📱 Push registration starting with projectId: 6f37ea61-53f4-4fdd-9bba-07d51ec40c35
+ LOG  📱 Running on physical device, checking permissions...
+ LOG  📱 Existing permission status: granted
+ LOG  📱 Cleaning up real-time subscriptions
+ LOG  📡 Unsubscribing from own memories

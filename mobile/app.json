@@ -1,0 +1,84 @@
+{
+  "expo": {
+    "name": "TickBox",
+    "slug": "tickbox",
+    "scheme": "tickbox",
+    "version": "1.4.1",
+    "orientation": "portrait",
+    "icon": "./icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vibecode.tickboxmemories.e8fhf5",
+      "buildNumber": "104",
+      "icon": "./icon.png",
+      "usesAppleSignIn": true,
+      "entitlements": {
+        "aps-environment": "production"
+      },
+      "infoPlist": {
+        "CFBundleDisplayName": "TickBox",
+        "NSCameraUsageDescription": "TickBox uses the camera to capture photos inside the app before you publish them.",
+        "NSPhotoLibraryUsageDescription": "TickBox accesses your photo library to let you choose videos that appear in the app.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
+    },
+    "android": {
+      "edgeToEdgeEnabled": true,
+      "package": "com.vibecode.tickboxmemories.e8fhf5",
+      "permissions": [
+        "com.android.vending.BILLING"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "TickBox needs access to your photo library to let you select and upload photos of event tickets, receipts, and memorable moments. For example, you can choose a photo of a concert ticket to create a memory entry.",
+          "cameraPermission": "TickBox uses your camera to capture photos of event tickets, receipts, and memorable moments. For example, you can take a photo of a concert ticket or sporting event stub to create and save a memory entry in the app."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./icon.png",
+          "color": "#ffffff",
+          "sounds": [],
+          "mode": "production"
+        }
+      ],
+      "expo-asset",
+      "expo-video",
+      "expo-web-browser",
+      "expo-apple-authentication"
+    ],
+    "updates": {
+      "url": "https://u.expo.dev/6f37ea61-53f4-4fdd-9bba-07d51ec40c35",
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 3000
+    },
+    "runtimeVersion": "1.4.1",
+    "extra": {
+      "eas": {
+        "projectId": "6f37ea61-53f4-4fdd-9bba-07d51ec40c35"
+      }
+    }
+  }
+}
